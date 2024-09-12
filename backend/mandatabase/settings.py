@@ -115,10 +115,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:63343",
-    "http://127.0.0.1:63343",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:63343",
+#     "http://127.0.0.1:63343",
+# ]
 
 # ALLOWED_HOSTS = [
 #     '127.0.0.1'
@@ -161,9 +161,21 @@ database_engine = config.get("database", "ENGINE")
 database_name = config.get("database", "NAME")
 database_user = config.get("database", "USER")
 database_password = config.get("database", "PASSWORD")
-database_host = config.get("database", "HOST")
+database_host = os.getenv('DJANGO_DB_HOST', 'db')
 database_port = config.get("database", "PORT")
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': os.getenv('DJANGO_DB_NAME', 'man_dbdb'),
+#         'USER': os.getenv('DJANGO_DB_USER', 'man_user'),
+#         'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'Y8ksKX2uqdHEepzW8s9*vX@LbANPVbrQgfgzpRgP@dJATFKCfQ6de@n3g6GYeL-yrh3Mp!CKa-hQdUM'),
+#         'HOST': os.getenv('DJANGO_DB_HOST', 'db'),  # This should be 'db' or whatever your Docker service name is
+#         'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+#     }
+# }
+#
 DATABASES = {
     "default": {
         "ENGINE": database_engine,
