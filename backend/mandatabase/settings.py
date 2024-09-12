@@ -164,18 +164,6 @@ database_password = config.get("database", "PASSWORD")
 database_host = os.getenv('DJANGO_DB_HOST', 'db')
 database_port = config.get("database", "PORT")
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': os.getenv('DJANGO_DB_NAME', 'man_dbdb'),
-#         'USER': os.getenv('DJANGO_DB_USER', 'man_user'),
-#         'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'Y8ksKX2uqdHEepzW8s9*vX@LbANPVbrQgfgzpRgP@dJATFKCfQ6de@n3g6GYeL-yrh3Mp!CKa-hQdUM'),
-#         'HOST': os.getenv('DJANGO_DB_HOST', 'db'),  # This should be 'db' or whatever your Docker service name is
-#         'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
-#     }
-# }
-#
 DATABASES = {
     "default": {
         "ENGINE": database_engine,
