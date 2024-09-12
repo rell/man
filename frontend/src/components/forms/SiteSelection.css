@@ -1,0 +1,93 @@
+input[type="text"] {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+}
+
+button {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-bottom: 0;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px; /* space between label and input */
+}
+
+.site-selection-container {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.site-list-item.selected {
+  background-color: #343a40; /* background for selected item */
+  color: #f8f9fa; /* contrasting color for selected item */
+}
+
+.site-list-item:hover {
+  background-color: #e9ecef; /* background on hover */
+}
+
+/* date range inputs to be next to each other */
+.date-range-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.date-range-container input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.button-container {
+  margin-bottom: 1rem;
+}
+
+.button-container .btn {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.date-range-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.clear-date-btn {
+  margin-top: 10px;
+  flex-direction: column;
+  width: 100%;
+}

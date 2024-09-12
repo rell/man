@@ -1,0 +1,4 @@
+// Remove flag attribute from map
+svg.leaflet-attribution-flag {
+  display: none !important;
+}

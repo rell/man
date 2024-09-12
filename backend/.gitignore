@@ -170,3 +170,4 @@ maritimeapp/migrations/
 maritimeapp/__pycache__/
 mandatabase/__pycache__/
 config.ini
+Pipfile-bak

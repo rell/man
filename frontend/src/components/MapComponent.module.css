@@ -1,0 +1,11 @@
+.mapContainer {
+  height: 100vh;
+  width: calc(100%);
+  margin-right: 0;
+  background: #fff;
+}
+
+.leaflet-container {
+  background: #ddd;
+  outline: 0;
+}
