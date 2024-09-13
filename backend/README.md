@@ -1,6 +1,6 @@
 # Backend for MAN Download Tool
 
-**_You must have database <ins>config.ini</ins> file in source directory with database credentials to run server_**
+**_You must have database <ins>config.ini</ins> file in backend source directory with database credentials to run/access the server_**
 
 ```ini
 [database]
