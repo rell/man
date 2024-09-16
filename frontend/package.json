@@ -51,6 +51,7 @@
   "devDependencies": {
     "@types/d3": "*",
     "@types/leaflet": "*",
-    "@types/react-window": "*"
+    "@types/react-window": "*",
+    "@babel/plugin-proposal-private-property-in-object":"*"
   }
 }
