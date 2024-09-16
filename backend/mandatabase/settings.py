@@ -157,21 +157,21 @@ WSGI_APPLICATION = "mandatabase.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Get the database configuration values
-database_engine = config.get("database", "ENGINE")
-database_name = config.get("database", "NAME")
-database_user = config.get("database", "USER")
-database_password = config.get("database", "PASSWORD")
-database_host = os.getenv('DJANGO_DB_HOST', 'db')
-database_port = config.get("database", "PORT")
+#database_engine = config.get("database", "ENGINE")
+#database_name = config.get("database", "NAME")
+#database_user = config.get("database", "USER")
+#database_password = config.get("database", "PASSWORD")
+#database_host = os.getenv('DJANGO_DB_HOST', 'db')
+#database_port = config.get("database", "PORT")
 
 DATABASES = {
     "default": {
-        "ENGINE": database_engine,
-        "NAME": database_name,
-        "USER": database_user,
-        "PASSWORD": database_password,
-        "HOST": database_host,
-        "PORT": database_port,
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": os.getenv('DJANGO_DB_NAME'),
+        "USER": os.getenv('DJANGO_DB_USER'),
+        "PASSWORD": os.getenv('DJANGO_DB_PASSWORD'),
+        "HOST": os.getenv('DJANGO_DB_HOST'),  
+        "PORT": os.getenv('DJANGO_DB_PORT'),
     }
 }
 
