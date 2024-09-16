@@ -3,26 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.105",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "axios": "^1.7.4",
-    "bootstrap": "^5.3.3",
-    "d3": "^7.9.0",
-    "leaflet": "^1.9.4",
-    "react": "^18.3.1",
-    "react-bootstrap": "^2.10.4",
-    "react-dom": "^18.3.1",
-    "react-leaflet": "^4.2.1",
-    "react-leaflet-draw": "^0.20.4",
-    "react-scripts": "5.0.1",
-    "react-window": "^1.8.10",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "@testing-library/jest-dom": "*",
+    "@testing-library/react": "*",
+    "@testing-library/user-event": "*",
+    "@types/jest": "*",
+    "@types/node": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "axios": "*",
+    "bootstrap": "*",
+    "d3": "*",
+    "leaflet": "*",
+    "react": "*",
+    "react-bootstrap": "*",
+    "react-dom": "*",
+    "react-leaflet": "*",
+    "react-leaflet-draw": "*",
+    "react-scripts": "*",
+    "react-window": "*",
+    "typescript": "*",
+    "web-vitals": "*"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -49,8 +49,8 @@
     ]
   },
   "devDependencies": {
-    "@types/d3": "^7.4.3",
-    "@types/leaflet": "^1.9.12",
-    "@types/react-window": "^1.8.8"
+    "@types/d3": "*",
+    "@types/leaflet": "*",
+    "@types/react-window": "*"
   }
 }
