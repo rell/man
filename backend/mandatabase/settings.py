@@ -170,7 +170,7 @@ DATABASES = {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": os.getenv('DJANGO_DB_NAME'),
         "USER": os.getenv('DJANGO_DB_USER'),
-        "PASSWORD": os.getenv('DJANGO_DB_PASSWORD'),
+        "PASSWORD": os.getenv('DJANGO_DB_PASS'),
         "HOST": os.getenv('DJANGO_DB_HOST'),  
         "PORT": os.getenv('DJANGO_DB_PORT'),
     }
