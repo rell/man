@@ -1,8 +1,5 @@
 /**
- * All the configuration variables are stored here
- top is local 
- second is prod
+ * Local dev. config.ts file
  */
-/* const API_BASE_URL = "http://localhost:8000"; */
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+ const API_BASE_URL = "http://localhost:8000"; 
 export default API_BASE_URL;
