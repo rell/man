@@ -6,6 +6,6 @@
 }
 
 .leaflet-container {
-  background: #ddd;
+  background: linear-gradient(90deg, grey, black);
   outline: 0;
 }

@@ -162,8 +162,7 @@ const CustomMapLayer: React.FC = () => {
       });
     };
 
-    const basemapUrl =
-      "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}";
+    const basemapUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     const basemapLayer = L.tileLayer(basemapUrl, {
       noWrap: true,
       ext: "jpg",
@@ -232,17 +231,19 @@ const CustomMapLayer: React.FC = () => {
 
 const MapComponent: React.FC<MapComponentProps> = ({ center, zoom }) => {
   return (
-    <Container fluid style={{ padding: "0" }} className={styles.mapContainer}>
-      <MapContainer
-        // @ts-ignore
-        center={center}
-        zoom={zoom}
-        attributionControl={false}
-        style={{ height: "100%", width: "100%" }}
-      >
-        <CustomMapLayer />
-      </MapContainer>
-    </Container>
+    <div className="leaflet-container">
+      <Container fluid style={{ padding: "0" }} className={styles.mapContainer}>
+        <MapContainer
+          // @ts-ignore
+          center={center}
+          zoom={zoom}
+          attributionControl={false}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <CustomMapLayer />
+        </MapContainer>
+      </Container>
+    </div>
   );
 };
 
