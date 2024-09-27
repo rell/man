@@ -9,4 +9,4 @@ __Interactive Download Tool for Maritime Aerosol Network Datasets featuring comp
 - Excluding readings based on boundries and date.
 - Download customization of dataset within the set parameters by retrieval, frequency, and quality. 
 
-<img src="https://github.com/user-attachments/assets/3e63295f-8d1a-4202-b3d6-876f41df6ef8" alt="MAN DL Example" height="400">
+<img src="https://github.com/user-attachments/assets/b29bde5a-402b-4305-951b-768e01b2417e" alt="MAN DL Example" height="400">
