@@ -347,7 +347,8 @@ const SidePanel: React.FC = () => {
             <Button variant="warning">Display Data</Button>
           </div>
           <hr className={styles.separator} />
-          <Card.Title>Download</Card.Title>
+          {/* remove redundant title for download */}
+          {/*<Card.Title>Download</Card.Title>*/}
           <div className={styles.buttonGroup}>
             <Button
               variant="secondary"
