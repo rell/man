@@ -165,13 +165,11 @@ const CustomMapLayer: React.FC = () => {
     const basemapUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     const basemapLayer = L.tileLayer(basemapUrl, {
       noWrap: true,
-      ext: "jpg",
       tileSize: 256,
       errorTileUrl: "",
       errorTileTimeout: 5000,
       maxZoom: 20,
-      attribution:
-        "© CNES, Airbus DS, PlanetObserver, Copernicus Data | © Stadia Maps, OpenMapTiles, OpenStreetMap contributors",
+      attribution: "© OpenStreetMap",
     });
 
     var Stadia_StamenTonerLabels = L.tileLayer(
@@ -201,7 +199,7 @@ const CustomMapLayer: React.FC = () => {
     githubControl.onAdd = () => {
       const div = L.DomUtil.create("div", "github-link");
       div.innerHTML = `
-    <a href="https://github.com/rell/man" target="_blank" style="display: flex; align-items: center; background: white; padding: 5px; border-radius: 5px;">
+    <a href="https://github.com/rell/man" target="_blank" style="display: flex; align-items: center; background: background-color: rgba(255, 255, 255, 0.5); padding: 5px; border-radius: 0px;">
       <img src="https://github.githubassets.com/assets/GitHub-Logo-ee398b662d42.png" alt="GitHub" style="width: auto; height: 10px; margin-right: 8px;">
       MAN Project
     </a>
