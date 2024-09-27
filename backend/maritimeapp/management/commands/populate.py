@@ -31,14 +31,13 @@ class Command(BaseCommand):
 
     @classmethod
     def process_chunk(cls, chunk, filetype, site_name, file):
-        print(f"Sitename: {site_name}")
+        print(f"Processing : {site_name}")
         model_classes = {
             format_two[0]: SiteMeasurementsDaily15,
             format_two[1]: SiteMeasurementsDaily20,
         }
         model = model_classes.get(filetype)
         
-        print(model, "running!")
         daily_header = [
             "Date(dd:mm:yyyy)",
             "Time(hh:mm:ss)",
@@ -188,7 +187,7 @@ class Command(BaseCommand):
         # Read the folder contents
         folder_path = os.path.join(".", "src")
         if os.path.exists(folder_path):
-            print("TRUE")
+            print("Folder exist -> moving to creating threaded processes")
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=NUM_WORKERS) as executor:
             futures = []
