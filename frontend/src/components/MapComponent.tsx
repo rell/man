@@ -231,8 +231,8 @@ const CustomMapLayer: React.FC = () => {
 
 const MapComponent: React.FC<MapComponentProps> = ({ center, zoom }) => {
   return (
-    <div className="leaflet-container">
-      <Container fluid style={{ padding: "0" }} className={styles.mapContainer}>
+    <Container fluid style={{ padding: "0" }} className={styles.mapContainer}>
+      <div className="leaflet-container">
         <MapContainer
           // @ts-ignore
           center={center}
@@ -242,8 +242,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom }) => {
         >
           <CustomMapLayer />
         </MapContainer>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 
