@@ -46,13 +46,13 @@ def process_file(file_path, start_date, end_date, bounds):
         start_date = pd.to_datetime(start_date, format='%Y-%m-%d', errors='coerce') if start_date else None
         end_date = pd.to_datetime(end_date, format='%Y-%m-%d', errors='coerce') if end_date else None
 
-        # Filter by date
+        # Filter by set date
         if start_date:
             df = df[df['Date(dd:mm:yyyy)'] >= start_date]
         if end_date:
             df = df[df['Date(dd:mm:yyyy)'] <= end_date]
 
-        # Filter by bounds
+        # Filter by set boundaries
         if bounds['min_lat']:
             df = df[df['Latitude'] >= float(bounds['min_lat'])]
         if bounds['max_lat']:
@@ -252,8 +252,10 @@ def download_data(request):
     try:
         if os.path.exists(full_temp_path):
             shutil.rmtree(full_temp_path)
+            print(f"Deleted temporary directory {full_temp_path}")
         if os.path.exists(zip_path):
             os.remove(zip_path)
+            print(f"Deleted temporary files {full_temp_path} and {zip_path}")
     except Exception as e:
         print(f"Error cleaning up temporary files: {e}")
 

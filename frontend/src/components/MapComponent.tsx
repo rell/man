@@ -163,14 +163,16 @@ const CustomMapLayer: React.FC = () => {
     };
 
     const basemapUrl =
-      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+      "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}";
     const basemapLayer = L.tileLayer(basemapUrl, {
       noWrap: true,
+      ext: "jpg",
       tileSize: 256,
       errorTileUrl: "",
       errorTileTimeout: 5000,
+      maxZoom: 20,
       attribution:
-        "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+        "© CNES, Airbus DS, PlanetObserver, Copernicus Data | © Stadia Maps, OpenMapTiles, OpenStreetMap contributors",
     });
 
     var Stadia_StamenTonerLabels = L.tileLayer(
@@ -184,7 +186,7 @@ const CustomMapLayer: React.FC = () => {
     );
 
     map.addLayer(basemapLayer);
-    map.addLayer(Stadia_StamenTonerLabels);
+    // map.addLayer(Stadia_StamenTonerLabels);
 
     createColorLegend().addTo(map);
 
@@ -202,7 +204,7 @@ const CustomMapLayer: React.FC = () => {
       div.innerHTML = `
     <a href="https://github.com/rell/man" target="_blank" style="display: flex; align-items: center; background: white; padding: 5px; border-radius: 5px;">
       <img src="https://github.githubassets.com/assets/GitHub-Logo-ee398b662d42.png" alt="GitHub" style="width: auto; height: 10px; margin-right: 8px;">
-      MAN Download Project
+      MAN Project
     </a>
   `;
       div.style.marginBottom = "10px";
@@ -220,7 +222,7 @@ const CustomMapLayer: React.FC = () => {
 
     return () => {
       map.removeLayer(basemapLayer);
-      map.removeLayer(Stadia_StamenTonerLabels);
+      // map.removeLayer(Stadia_StamenTonerLabels);
       removeAllControls();
     };
   }, [map, setMap]);
