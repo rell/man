@@ -232,17 +232,15 @@ const CustomMapLayer: React.FC = () => {
 const MapComponent: React.FC<MapComponentProps> = ({ center, zoom }) => {
   return (
     <Container fluid style={{ padding: "0" }} className={styles.mapContainer}>
-      <div className="leaflet-container">
-        <MapContainer
-          // @ts-ignore
-          center={center}
-          zoom={zoom}
-          attributionControl={false}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <CustomMapLayer />
-        </MapContainer>
-      </div>
+      <MapContainer
+        // @ts-ignore
+        center={center}
+        zoom={zoom}
+        attributionControl={false}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <CustomMapLayer />
+      </MapContainer>
     </Container>
   );
 };
