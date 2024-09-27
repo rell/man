@@ -31,7 +31,7 @@ def process_file(file_path, start_date, end_date, bounds):
             header_lines = [next(file) for _ in range(4)]
         
         # Row 5 is the header and the data starts from row 6
-        df = pd.read_csv(file_path, skiprows=4)  # Skip first 4 lines
+        df = pd.read_csv(file_path, skiprows=4, encoding='latin-1')  # Skip first 4 lines
         
         date_format = '%d:%m:%Y'  # Key Date(dd:mm:yyyy)
 
