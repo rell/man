@@ -64,6 +64,13 @@ export function createColorLegend() {
   colorLegend.onAdd = function (map: L.Map) {
     const div = L.DomUtil.create("div", "legend");
 
+    // TODO: Interface with sidebar to dynmanically change when Display Data modal is modified
+    const readText = L.DomUtil.create("div", "", div);
+    readText.innerHTML = `<strong>Data Preview:</strong> AOD 500nm`;
+    readText.style.textAlign = "center";
+    readText.style.marginBottom = "10px";
+    readText.style.fontSize = "14px";
+
     // Create and append colorBar div
     const colorBar = L.DomUtil.create("div", "", div);
     colorBar.id = "colorBar";
@@ -75,7 +82,7 @@ export function createColorLegend() {
     // Add triangles outside the colorBar
     const leftTriangle = L.DomUtil.create("div", "", div);
     leftTriangle.style.position = "absolute";
-    leftTriangle.style.top = "15px";
+    leftTriangle.style.top = "46px";
     leftTriangle.style.left = `${10}px`;
     leftTriangle.style.width = "0";
     leftTriangle.style.height = "10px";
@@ -85,7 +92,7 @@ export function createColorLegend() {
 
     const rightTriangle = L.DomUtil.create("div", "", div);
     rightTriangle.style.position = "absolute";
-    rightTriangle.style.top = "15px";
+    rightTriangle.style.top = "46px";
     rightTriangle.style.right = `${10}px`;
     rightTriangle.style.width = "0";
     rightTriangle.style.height = "0";
@@ -98,7 +105,7 @@ export function createColorLegend() {
     legendMarker.id = "legendMarker";
     legendMarker.style.width = "300px";
     legendMarker.style.textAlign = "center";
-    legendMarker.style.fontSize = "12px";
+    legendMarker.style.fontSize = "10px";
     legendMarker.style.position = "relative";
     legendMarker.style.marginTop = "5px";
     legendMarker.style.padding = "0 20px";
@@ -134,7 +141,7 @@ export function createColorLegend() {
     labels.innerHTML = `<span>Start</span><span>End</span>`;
 
     div.style.padding = "15px";
-    div.style.backgroundColor = "white";
+    div.style.backgroundColor = "rgba(255,255,255,0.7)";
     div.style.borderRadius = "5px";
     div.style.fontSize = "0.8em";
     div.style.boxShadow = "0 0 5px rgba(0, 0, 0, 0.5)";
@@ -199,12 +206,13 @@ const CustomMapLayer: React.FC = () => {
     githubControl.onAdd = () => {
       const div = L.DomUtil.create("div", "github-link");
       div.innerHTML = `
-    <a href="https://github.com/rell/man" target="_blank" style="display: flex; align-items: center; background: background-color: rgba(255, 255, 255, 0.5); padding: 5px; border-radius: 0px;">
+    <a href="https://github.com/rell/man" target="_blank" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.7); padding: 5px; border-radius: 0px;">
       <img src="https://github.githubassets.com/assets/GitHub-Logo-ee398b662d42.png" alt="GitHub" style="width: auto; height: 10px; margin-right: 8px;">
-      MAN Project
+      <strong>MAN PROJECT</strong>
     </a>
   `;
-      div.style.marginBottom = "10px";
+      div.style.marginBottom = "5px";
+      div.style.marginRight = "0px";
       return div;
     };
 
