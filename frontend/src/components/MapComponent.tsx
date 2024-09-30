@@ -169,17 +169,23 @@ const CustomMapLayer: React.FC = () => {
       });
     };
 
-    const basemapUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-    const basemapLayer = L.tileLayer(basemapUrl, {
+    const basemapUrl =
+      "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi";
+    const basemapLayer = L.tileLayer.wms(basemapUrl, {
+      layers: "BlueMarble_NextGeneration",
+      format: "image/png",
+      crs: L.CRS.EPSG4326,
+      opacity: 1.0,
+      backgroundColor: "transparent",
       noWrap: true,
       tileSize: 256,
       errorTileUrl: "",
       errorTileTimeout: 5000,
       maxZoom: 20,
-      attribution: "© OpenStreetMap",
+      // attribution: "© OpenStreetMap",
     });
 
-    var Stadia_StamenTonerLabels = L.tileLayer(
+    var references = L.tileLayer(
       "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.{ext}",
       {
         noWrap: true,
@@ -190,7 +196,7 @@ const CustomMapLayer: React.FC = () => {
     );
 
     map.addLayer(basemapLayer);
-    // map.addLayer(Stadia_StamenTonerLabels);
+    map.addLayer(references);
 
     createColorLegend().addTo(map);
 
@@ -218,7 +224,7 @@ const CustomMapLayer: React.FC = () => {
 
     const attributionControl = L.control
       .attribution({ position: "bottomright" })
-      .addAttribution(" ")
+      .addAttribution("© NASA GIBS MODIS")
       .setPrefix('<a href="https://leafletjs.com/">Leaflet</a>')
       .addTo(map);
 
@@ -227,7 +233,7 @@ const CustomMapLayer: React.FC = () => {
 
     return () => {
       map.removeLayer(basemapLayer);
-      // map.removeLayer(Stadia_StamenTonerLabels);
+      map.removeLayer(references);
       removeAllControls();
     };
   }, [map, setMap]);

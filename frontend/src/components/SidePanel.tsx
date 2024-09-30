@@ -163,8 +163,10 @@ const SidePanel: React.FC = () => {
 
       const drawHandler = new L.Draw.Rectangle(map, {
         shapeOptions: {
-          color: "#5ec6c6",
+          color: "#ff0000",
           weight: 2,
+          fill: false,
+          opacity: 1,
         },
       });
 
@@ -184,9 +186,6 @@ const SidePanel: React.FC = () => {
           map.removeLayer(rectangle);
         }
 
-        const newRectangle = L.rectangle(bounds).addTo(map);
-        setRectangle(newRectangle);
-
         // Getting bnoundries
         const sw = bounds.getSouthWest();
         const ne = bounds.getNorthEast();
@@ -196,6 +195,18 @@ const SidePanel: React.FC = () => {
         const minLng = Math.max(-180, Math.min(180, sw.lng));
         const maxLat = Math.max(-90, Math.min(90, ne.lat));
         const maxLng = Math.max(-180, Math.min(180, ne.lng));
+
+        const correctedBounds = L.latLngBounds(
+          L.latLng(minLat, minLng),
+          L.latLng(maxLat, maxLng),
+        );
+        const newBounds = L.rectangle(correctedBounds, {
+          color: "#ff0000", // Red outline
+          weight: 2,
+          fill: false, // No fill
+        }).addTo(map);
+
+        setRectangle(newBounds);
 
         setMinLat(minLat);
         setMinLng(minLng);

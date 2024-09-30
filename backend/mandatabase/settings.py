@@ -158,11 +158,12 @@ WSGI_APPLICATION = "mandatabase.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Get the database configuration values
+# if you do not have access to the config.ini file, review the following https://github.com/rell/man/blob/main/README.md
 db_engine = config.get("database", "ENGINE")
 db_name = config.get("database", "NAME")
 db_user = config.get("database", "USER")
 db_password = config.get("database", "PASSWORD")
-db_host = os.getenv('DJANGO_DB_HOST', 'db')
+db_host = os.getenv('DJANGO_DB_HOST', 'localhost')
 db_port = config.get("database", "PORT")
 
 DATABASES = {
@@ -171,7 +172,7 @@ DATABASES = {
         "NAME": db_name,
         "USER": db_user,
         "PASSWORD": db_password,
-        "HOST": db_host,  
+        "HOST": db_host,
         "PORT": db_port,
     }
 }

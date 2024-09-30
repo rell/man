@@ -245,7 +245,10 @@ const SiteManager: React.FC<SiteManagerProps> = ({
             // Iterate over all layers in the map
             for (const i in map._layers) {
               // Check if the layer is a polyline
-              if (map._layers[i] instanceof L.Polyline) {
+              if (
+                map._layers[i] instanceof L.Polyline &&
+                !(map._layers[i] instanceof L.Rectangle)
+              ) {
                 try {
                   // Remove the polyline layer from the map
                   map.removeLayer(map._layers[i]);
