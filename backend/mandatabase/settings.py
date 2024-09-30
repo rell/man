@@ -52,7 +52,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # production
- ALLOWED_HOSTS = [
+ALLOWED_HOSTS = [
    db_host,
    f'http:/{db_host}',
  ]
