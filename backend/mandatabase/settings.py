@@ -51,11 +51,6 @@ DEBUG = True
 # local
 ALLOWED_HOSTS = ["*"]
 
-# production
-ALLOWED_HOSTS = [
-   db_host,
-   f'http:/{db_host}',
- ]
 
 # Application definition
 INSTALLED_APPS = [

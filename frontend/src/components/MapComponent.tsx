@@ -196,7 +196,7 @@ const CustomMapLayer: React.FC = () => {
     );
 
     map.addLayer(basemapLayer);
-    map.addLayer(references);
+    // map.addLayer(references);
 
     createColorLegend().addTo(map);
 
@@ -233,7 +233,7 @@ const CustomMapLayer: React.FC = () => {
 
     return () => {
       map.removeLayer(basemapLayer);
-      map.removeLayer(references);
+      // map.removeLayer(references);
       removeAllControls();
     };
   }, [map, setMap]);
