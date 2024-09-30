@@ -23,6 +23,15 @@ import configparser
 config = configparser.ConfigParser()
 config.read("config.ini")
 
+# Get the database configuration values
+# if you do not have access to the config.ini file, review the following https://github.com/rell/man/blob/main/README.md
+db_engine = config.get("database", "ENGINE")
+db_name = config.get("database", "NAME")
+db_user = config.get("database", "USER")
+db_password = config.get("database", "PASSWORD")
+db_host = os.getenv('DJANGO_DB_HOST', 'localhost')
+db_port = config.get("database", "PORT")
+
 # from django.contrib.gis.gdal import GDAL_LIBRARY_PATH
 # GDAL_LIBRARY_PATH = os.path.join('C:', 'Program Files', 'GDAL', 'gdal.dll')
 
@@ -43,12 +52,10 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # production
-# ALLOWED_HOSTS = [
-#    'http://ec2-50-19-10-121.compute-1.amazonaws.com/',
-#    '50.19.10.121',
-#    'http://50.10.19.121',
-#    'django',
-# ]
+ ALLOWED_HOSTS = [
+   db_host,
+   f'http:/{db_host}',
+ ]
 
 # Application definition
 INSTALLED_APPS = [
@@ -107,7 +114,7 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3001',
+    f'http://{db_host}:3000',
 ]
 
 # CSRF_COOKIE_SECURE = False
@@ -127,12 +134,12 @@ CORS_ALLOW_CREDENTIALS = True
 #     'localhost:63343',
 # ]
 
-CORS_ALLOW_METHODS = ["POST", "OPTIONS", "GET"]
+CORS_ALLOW_METHODS = ["GET"]
 
-# CORS_ALLOW_HEADERS = [
-#     'Content-Type',
-#     'X-CSRFToken',
-# ]
+CORS_ALLOW_HEADERS = [
+    'Content-Type',
+    'X-CSRFToken',
+]
 
 ROOT_URLCONF = "mandatabase.urls"
 
@@ -156,15 +163,6 @@ WSGI_APPLICATION = "mandatabase.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# Get the database configuration values
-# if you do not have access to the config.ini file, review the following https://github.com/rell/man/blob/main/README.md
-db_engine = config.get("database", "ENGINE")
-db_name = config.get("database", "NAME")
-db_user = config.get("database", "USER")
-db_password = config.get("database", "PASSWORD")
-db_host = os.getenv('DJANGO_DB_HOST', 'localhost')
-db_port = config.get("database", "PORT")
 
 DATABASES = {
     "default": {
