@@ -1,5 +1,5 @@
 import React from "react";
-import "./LoadingIndicator.css"; // Ensure you create and style this CSS file
+import "./LoadingIndicator.css"; 
 
 const LoadingIndicator: React.FC = () => {
   return (
