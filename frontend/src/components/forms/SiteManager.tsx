@@ -194,8 +194,8 @@ const SiteManager: React.FC<SiteManagerProps> = ({
           // Create the circle marker
           const circleMarker = L.circleMarker([latlng.lat, latlng.lng], {
             color: setColor(value),
-            radius: 4, // Adjust the radius as needed
-            fillOpacity: 0.9, // Adjust opacity as needed
+            radius: 4,
+            fillOpacity: 0.9,
             stroke: false,
             interactive: true,
             value: value,
@@ -231,7 +231,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
             circleMarker
               .bindPopup(
                 `<b>Site:</b> ${circleMarker.options.site}<br>
-                 <b>Value:</b> ${circleMarker.options.value}<br>
+                 <b>Value:</b> ${circleMarker.options.value.toFixed(3)}<br>
                  <b>Date:</b> ${circleMarker.options.date}`,
               )
               .openPopup();
@@ -274,7 +274,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
                   layer
                     .bindPopup(
                       `<b>Site:</b> ${layer.options.site}<br>
-                        <b>Value:</b> ${layer.options.value}<br>
+                        <b>Value:</b> ${layer.options.value.toFixed(3)}<br>
                         <b>Date:</b> ${layer.options.date}`,
                     )
                     .openPopup();
@@ -304,7 +304,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
                     layer
                       .bindPopup(
                         `<b>Site:</b> ${layer.options.site}<br>
-                        <b>Value:</b> ${layer.options.value}<br>
+                        <b>Value:</b> ${layer.options.value.toFixed(3)}<br>
                         <b>Date:</b> ${layer.options.date}`,
                       )
                       .openPopup();

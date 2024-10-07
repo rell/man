@@ -35,7 +35,7 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
     const savedEndDate = localStorage.getItem("endDate") || today;
     setStartDate(savedStartDate);
     setEndDate(savedEndDate);
-  }, [today]);
+  }, [minStartDate, today]);
 
   // Sync selectedSites with props
   useEffect(() => {
@@ -180,7 +180,7 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
     <div className="site-selection-container">
       <input
         type="text"
-        placeholder="Search for sites..."
+        placeholder="Search for cruises..."
         value={searchQuery}
         onChange={handleSearchChange}
       />
@@ -188,7 +188,7 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
         <input
           type="date"
           placeholder="Start Date"
-          value={minStartDate}
+          value={startDate}
           onChange={handleStartDateChange}
           min={minStartDate}
           max={today}

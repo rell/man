@@ -109,7 +109,7 @@ const SidePanel: React.FC = () => {
       const filenameMatch = disposition
         ? disposition.match(/filename="(.+)"/)
         : null;
-      const filename = filenameMatch ? filenameMatch[1] : "downloaded_file.zip";
+      const filename = filenameMatch ? filenameMatch[1] : "man_dataset.tar.gz";
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
       // Create a link element
@@ -216,7 +216,7 @@ const SidePanel: React.FC = () => {
 
         setRectangleDrawn(true);
 
-        console.log("Rectangle Bounds:", bounds);
+        // console.log("Rectangle Bounds:", bounds);
         drawHandler.disable();
         setDrawing(false);
       });

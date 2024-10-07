@@ -6,7 +6,7 @@ const LoadingIndicator: React.FC = () => {
     <div className="loading-overlay">
       <div className="loading-spinner"></div>
       <div className="loading-text">
-        Downloading your MAN dataset.
+        Processing your custom maritime aerosol dataset request.
         <br />
         Please Wait...
       </div>

@@ -16,20 +16,25 @@ The processed files are then zipped and sent to the user as a stream to be downl
 '''
 
 import os
+from re import sub
 import shutil
 import time
-import zipfile
+import tarfile 
 import pandas as pd
 from concurrent.futures import ProcessPoolExecutor
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
+import subprocess
+from datetime import date, datetime
+from tqdm import tqdm
 
 def process_file(file_path, start_date, end_date, bounds):
     try:
         # First four lines contain disclaimers and metadata
-        with open(file_path, 'r') as file:
-            header_lines = [next(file) for _ in range(4)]
+        with open(file_path, 'r', encoding="latin-1") as f:
+            header_lines = [next(f) for _ in range(4)]
         
+        f.close()
         # Row 5 is the header and the data starts from row 6
         df = pd.read_csv(file_path, skiprows=4, encoding='latin-1')  # Skip first 4 lines
         
@@ -62,14 +67,19 @@ def process_file(file_path, start_date, end_date, bounds):
         if bounds['max_lng']:
             df = df[df['Longitude'] <= float(bounds['max_lng'])]
 
+        if df.empty:
+            return
+        
         # Convert dates back to original format from file
         df['Date(dd:mm:yyyy)'] = df['Date(dd:mm:yyyy)'].dt.strftime(date_format)
+        
 
         # Overwrite the file with new filtered data
         with open(file_path, 'w') as f:
             f.writelines(header_lines)
             # new filtered data 
             df.to_csv(f, index=False, header=True)
+        f.close()
 
     # TODO: Log exceptions to log file
     except Exception as e:
@@ -84,6 +94,7 @@ def download_data(request):
     unique_temp_folder = str(int(time.time())) + "_MAN_DATA"
     keep_files = ["data_usage_policy.pdf", "data_usage_policy.txt"]
 
+    
     # Variables from request
     sites = request.GET.getlist('sites[]')
     start_date = request.GET.get('start_date', None)
@@ -97,6 +108,23 @@ def download_data(request):
         "max_lat": request.GET.get('max_lat', None),
         "max_lng": request.GET.get('max_lng', None)
     }
+
+
+
+    print(f"{datetime(2004,10,16).strftime('%Y-%m-%d')}\n")
+    print(f"{start_date}\n")
+
+    if (start_date is not None) or (end_date is not None):
+        # Define the specific date to compare with
+        init_start_date = datetime(2004,10,16).strftime('%Y-%m-%d')
+        today_date = datetime.now().date().strftime('%Y-%m-%d') 
+
+        if start_date is not None:
+            if start_date == init_start_date:
+                start_date = None
+        if end_date is not None:
+            if end_date == today_date:
+                end_date = None
 
     # DEBUG
     # print("Sites:", sites)
@@ -175,6 +203,7 @@ def download_data(request):
         return files_to_copy
 
     def copy_files(src_dir, temp_dir, retrievals, files_to_copy):
+        complete_files = []
         for retrieval in retrievals:
             retrieval_dir = os.path.join(temp_dir, retrieval)
             os.makedirs(retrieval_dir, exist_ok=True)
@@ -184,13 +213,24 @@ def download_data(request):
                 temp_file = os.path.join(retrieval_dir, file_name)
 
                 if os.path.isfile(src_file):
-                    shutil.copy(src_file, temp_file)
-                    # TODO: Log to log file
-                    print(f"Copied {src_file} to {temp_file}")
+                    complete_files.append(src_file)
+                    # shutil.copy(src_file, temp_file)
+                    # # TODO: Log to log file
+                    # print(f"Copied {src_file} to {temp_file}")
                 else:
                     #TODO: Log to log file
-                    print(f"Source file {src_file} does not exist")
+                    pass    
+                # print(f"Source file {src_file} does not exist")
 
+        print(f"copying files {complete_files}")
+        
+        # -Bulk copy all files to directory.
+        subprocess.run(["cp"] + ["-r"] + complete_files + [temp_dir])
+        if 'AOD' in retrievals:
+            subprocess.run(f'mv {temp_dir}/*.lev* {os.path.join(temp_dir, 'AOD')}', check=True, shell=True)
+        if 'SDA' in retrievals:
+            subprocess.run(f'mv {temp_dir}/*.ONEILL* {os.path.join(temp_dir, 'SDA')}', check=True, shell=True)
+        
         for policy_file in keep_files:
             src_policy_file = os.path.join(src_dir, policy_file)
             temp_policy_file = os.path.join(temp_dir, policy_file)
@@ -212,6 +252,7 @@ def download_data(request):
         files = []
         for retrieval in retrievals:
             subdir_path = os.path.join(temp_dir, retrieval)
+            print(f"Subdirectory path: {subdir_path}")
 
             if os.path.isdir(subdir_path):
                 for file_name in os.listdir(subdir_path):
@@ -230,32 +271,51 @@ def download_data(request):
             for future in futures:
                 future.result()
 
+    def add_with_progress(tarf, folder):
+        items = [item for item in os.listdir(folder) if os.path.exists(os.path.join(folder, item))]
+        
+        print(items)
+        with tqdm(total=len(items), unit='file') as pbar:
+            for file in items:
+                tarf.add(os.path.join(folder, file), arcname=file)
+                pbar.update(1)  # Update progress bar for each file added
 
     files_to_copy = get_files_to_copy(sites, retrievals, frequency, quality, file_endings)
     copy_files(src_dir, full_temp_path, retrievals, files_to_copy)
-    process_files(full_temp_path, start_date, end_date, bounds, retrievals)
+    
+    if start_date is not None or end_date is not None or bounds['min_lat'] is not None:
+        process_files(full_temp_path, start_date, end_date, bounds, retrievals)
 
-    zip_filename = f"{unique_temp_folder}.zip"
-    zip_path = os.path.join(temp_base_dir, zip_filename)
-    with zipfile.ZipFile(zip_path, 'w') as zipf:
-        for root, dirs, files in os.walk(full_temp_path):
-            for file in files:
-                file_path = os.path.join(root, file)
-                arcname = os.path.relpath(file_path, full_temp_path)
-                zipf.write(file_path, arcname=arcname)
+    tar_filename = f"{unique_temp_folder}.tar.gz"
+    tar_path = os.path.join(temp_base_dir, tar_filename)
+    directory_to_archive = os.path.join(temp_base_dir, unique_temp_folder)
 
-    response = HttpResponse(content_type='application/zip')
-    response['Content-Disposition'] = f'attachment; filename={zip_filename}'
-    with open(zip_path, 'rb') as f:
+    # Create a tar.gz file
+    try:
+        subprocess.run(['tar', '-czvf', tar_path, directory_to_archive], check=True)
+        print(f"Successfully created {tar_filename} from {directory_to_archive}")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while creating the tar file: {e}")
+        # for root, dirs, files in os.walk(full_temp_path):
+        #     for file in files:
+        #         file_path = os.path.join(root, file)
+        #         arcname = os.path.relpath(file_path, full_temp_path)
+        #         tarf.add(file_path, arcname=arcname)
+        #
+    response = HttpResponse(content_type='application/gzip')
+    response['Content-Disposition'] = f'attachment; filename={tar_filename}'
+
+    with open(tar_path, 'rb') as f:
         response.write(f.read())
 
+    # Clean up temporary files
     try:
         if os.path.exists(full_temp_path):
             shutil.rmtree(full_temp_path)
             print(f"Deleted temporary directory {full_temp_path}")
-        if os.path.exists(zip_path):
-            os.remove(zip_path)
-            print(f"Deleted temporary files {full_temp_path} and {zip_path}")
+        if os.path.exists(tar_path):
+            os.remove(tar_path)
+            print(f"Deleted temporary files {full_temp_path} and {tar_path}")
     except Exception as e:
         print(f"Error cleaning up temporary files: {e}")
 

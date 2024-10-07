@@ -1,3 +1,7 @@
 svg.leaflet-attribution-flag {
   display: none !important;
 }
+
+.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom {
+  background: linear-gradient(90deg, black, black);
+}

@@ -214,6 +214,8 @@ const CustomMapLayer: React.FC = () => {
       div.innerHTML = `
     <a href="https://github.com/rell/man" target="_blank" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.7); padding: 5px; border-radius: 0px;">
       <img src="https://github.githubassets.com/assets/GitHub-Logo-ee398b662d42.png" alt="GitHub" style="width: auto; height: 10px; margin-right: 8px;">
+    
+      <img src="https://camo.githubusercontent.com/e569686d6182fa7259dcb392e42e16d2e336b408f34362a3bea6d13c8fdc0337/68747470733a2f2f7a656e6f646f2e6f72672f7265636f72642f373734323939372f66696c65732f546f70735f42616467655f4e6173612e706e67" alt="TOPS" style="width: auto; height: 20px; margin-right: 8px;"/>
       <strong>MAN PROJECT</strong>
     </a>
   `;
@@ -224,7 +226,7 @@ const CustomMapLayer: React.FC = () => {
 
     const attributionControl = L.control
       .attribution({ position: "bottomright" })
-      .addAttribution("© NASA GIBS MODIS")
+      .addAttribution("© NASA GIBS EOSDIS")
       .setPrefix('<a href="https://leafletjs.com/">Leaflet</a>')
       .addTo(map);
 
