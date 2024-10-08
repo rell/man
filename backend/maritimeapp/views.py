@@ -26,7 +26,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 import subprocess
 from datetime import date, datetime
-from tqdm import tqdm
+# from tqdm import tqdm
 
 def process_file(file_path, start_date, end_date, bounds):
     try:
@@ -271,14 +271,14 @@ def download_data(request):
             for future in futures:
                 future.result()
 
-    def add_with_progress(tarf, folder):
-        items = [item for item in os.listdir(folder) if os.path.exists(os.path.join(folder, item))]
-        
-        print(items)
-        with tqdm(total=len(items), unit='file') as pbar:
-            for file in items:
-                tarf.add(os.path.join(folder, file), arcname=file)
-                pbar.update(1)  # Update progress bar for each file added
+    # def add_with_progress(tarf, folder):
+    #     items = [item for item in os.listdir(folder) if os.path.exists(os.path.join(folder, item))]
+    #     
+    #     print(items)
+    #     with tqdm(total=len(items), unit='file') as pbar:
+    #         for file in items:
+    #             tarf.add(os.path.join(folder, file), arcname=file)
+    #             pbar.update(1)  # Update progress bar for each file added
 
     files_to_copy = get_files_to_copy(sites, retrievals, frequency, quality, file_endings)
     copy_files(src_dir, full_temp_path, retrievals, files_to_copy)
