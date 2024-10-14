@@ -2,7 +2,9 @@ import React, { useEffect, useState, useCallback, ReactElement } from "react";
 import { useMapContext } from "../MapContext";
 import L from "leaflet";
 import * as d3 from "d3";
+import "leaflet-svg-shape-markers"; // shape markers
 import API_BASE_URL from "../../config";
+import { click } from "@testing-library/user-event/dist/click";
 
 export interface SiteSelect {
   name: string;
@@ -192,9 +194,10 @@ const SiteManager: React.FC<SiteManagerProps> = ({
           }
 
           // Create the circle marker
-          const circleMarker = L.circleMarker([latlng.lat, latlng.lng], {
+          const cruiseMarker = L.shapeMarker([latlng.lat, latlng.lng], {
             color: setColor(value),
             radius: 4,
+            shape: "square",
             fillOpacity: 0.9,
             stroke: false,
             interactive: true,
@@ -205,7 +208,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
           }).addTo(siteGroups[site]);
 
           // Bind click event to change opacity of markers in the same group
-          circleMarker.on("click", () => {
+          cruiseMarker.on("click", () => {
             const currentTime = Date.now();
             // updateMarkerOpacity(siteGroups[site]);
 
@@ -221,23 +224,23 @@ const SiteManager: React.FC<SiteManagerProps> = ({
               lastClickedSite = null;
             } else {
               // Handle single click
-              updateMarkerOpacity(siteGroups[site]);
+              updateMarkerOpacity(site);
               drawPolyline(site, data);
               lastClickTime = currentTime;
               lastClickedSite = site;
             }
           });
-          circleMarker.on("mouseover", () => {
-            circleMarker
+          cruiseMarker.on("mouseover", () => {
+            cruiseMarker
               .bindPopup(
-                `<b>Site:</b> ${circleMarker.options.site}<br>
-                 <b>Value:</b> ${circleMarker.options.value.toFixed(3)}<br>
-                 <b>Date:</b> ${circleMarker.options.date}`,
+                `<b>Site:</b> ${cruiseMarker.options.site}<br>
+                 <b>Value:</b> ${cruiseMarker.options.value.toFixed(3)}<br>
+                 <b>Date:</b> ${cruiseMarker.options.date}`,
               )
               .openPopup();
           });
-          circleMarker.on("mouseout", () => {
-            circleMarker.closePopup();
+          cruiseMarker.on("mouseout", () => {
+            cruiseMarker.closePopup();
           });
 
           // Function to clear all polylines from the map
@@ -286,12 +289,13 @@ const SiteManager: React.FC<SiteManagerProps> = ({
               }
             });
           };
-          const updateMarkerOpacity = (clickedGroup: L.FeatureGroup) => {
+          const updateMarkerOpacity = (site: string) => {
             map.eachLayer((layer: L.Layer) => {
-              if (layer instanceof L.CircleMarker) {
-                if (clickedGroup.hasLayer(layer)) {
+              if (layer.options.site !== undefined) {
+                if (layer.options.site === site) {
                   // Restore the original color for markers in the clicked group
                   layer.setStyle({
+                    shape: "square",
                     fillOpacity: 1,
                     color: layer.options.originalColor,
                     weight: 2,
@@ -315,6 +319,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
                 } else {
                   // Set color to grey for markers not in the clicked group
                   layer.setStyle({
+                    shape: "square",
                     fillOpacity: 0.3,
                     color: "grey",
                     weight: 2,

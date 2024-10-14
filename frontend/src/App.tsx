@@ -9,18 +9,6 @@ const App: React.FC = () => {
   const center: [number, number] = [0, 0];
   const zoom = 2;
 
-  // Hide SVG leaflet attribution flag
-  useEffect(() => {
-    const hideSvgElement = () => {
-      const svgElement = document.querySelector(".leaflet-attribution-flag");
-      if (svgElement) {
-        svgElement.setAttribute("style", "display: none !important;");
-      }
-    };
-
-    hideSvgElement();
-  }, []);
-
   return (
     <SiteProvider>
       <MapProvider>
