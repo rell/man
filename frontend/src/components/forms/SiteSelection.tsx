@@ -206,16 +206,20 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
         Clear Date
       </button>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <div className="w-45">
-          <button onClick={selectAllFilteredSites} className="btn btn-primary">
+        <div className="w-50">
+          <button
+            onClick={selectAllFilteredSites}
+            className="btn btn-primary w-100"
+          >
             Select All
           </button>
         </div>
-        <div style={{ width: "10%" }}></div>
-        <div className="w-45">
+        {/* Dynamic gap between boundry buttons */}
+        <div style={{ width: "2%" }}></div>
+        <div className="w-50">
           <button
             onClick={deselectAllFilteredSites}
-            className="btn btn-warning w-100"
+            className="btn btn-danger w-100"
           >
             Unselect All
           </button>

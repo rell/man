@@ -22,6 +22,7 @@ const SidePanel: React.FC = () => {
   const [zoomLevel, setZoomLevel] = useState(map?.getZoom() || 2);
   const [showModal, setShowModal] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [showDataModal, setShowDataModal] = useState(false);
   const [selectedSites, setSelectedSites] = useState<Set<string>>(new Set());
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -65,7 +66,13 @@ const SidePanel: React.FC = () => {
   const handleToggleDownloadModal = () => {
     setShowDownloadModal((prev) => !prev);
   };
+  const handleToggleDataModal = () => {
+    setShowDataModal((prev) => !prev);
+  };
 
+  const handleToggleModal = () => {
+    setShowModal((prev) => !prev);
+  };
   const handleOptionToggle = (
     option: string,
     setSelectedOptions: React.Dispatch<React.SetStateAction<Set<string>>>,
@@ -144,10 +151,6 @@ const SidePanel: React.FC = () => {
       map.setZoom(zoom);
       setZoomLevel(zoom);
     }
-  };
-
-  const handleToggleModal = () => {
-    setShowModal((prev) => !prev);
   };
 
   const handleSelectionChange = (
@@ -355,7 +358,9 @@ const SidePanel: React.FC = () => {
             <Button variant="success" onClick={handleToggleModal}>
               Cruise Selection
             </Button>
-            <Button variant="warning">Display Data</Button>
+            <Button variant="warning" onClick={handleToggleDataModal}>
+              Display Data
+            </Button>
           </div>
           <hr className={styles.separator} />
           {/* remove redundant title for download */}
@@ -373,7 +378,11 @@ const SidePanel: React.FC = () => {
       </Card>
 
       {/* Download Modal */}
-      <Modal show={showDownloadModal} onHide={handleToggleDownloadModal}>
+      <Modal
+        show={showDownloadModal}
+        onHide={handleToggleDownloadModal}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Download Data</Modal.Title>
         </Modal.Header>
@@ -468,6 +477,14 @@ const SidePanel: React.FC = () => {
             Done
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDataModal} onHide={handleToggleDataModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Data Display</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body></Modal.Body>
       </Modal>
     </>
   );

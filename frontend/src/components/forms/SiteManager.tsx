@@ -377,7 +377,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
                 const fraction = index / latlngs.length;
                 const color = colorScale(fraction);
 
-                const segment = L.polyline([latlng, nextLatLng], {
+                L.polyline([latlng, nextLatLng], {
                   weight: 3,
                   color: color,
                   opacity: 1,
