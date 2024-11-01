@@ -4,7 +4,6 @@ import L from "leaflet";
 import * as d3 from "d3";
 import "leaflet-svg-shape-markers"; // shape markers
 import API_BASE_URL from "../../config";
-import { click } from "@testing-library/user-event/dist/click";
 
 export interface SiteSelect {
   name: string;

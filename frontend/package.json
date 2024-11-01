@@ -5,7 +5,6 @@
   "dependencies": {
     "@testing-library/jest-dom": "*",
     "@testing-library/react": "*",
-    "@testing-library/user-event": "*",
     "@types/jest": "*",
     "@types/node": "*",
     "@types/react": "*",
@@ -49,9 +48,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "*",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/d3": "*",
     "@types/leaflet": "*",
-    "@types/react-window": "*",
-    "@babel/plugin-proposal-private-property-in-object":"*"
+    "@types/react-window": "*"
   }
 }
