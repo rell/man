@@ -7,6 +7,6 @@ __Interactive Download Tool for Maritime Aerosol Network Datasets featuring comp
 - Cruise path tracing
 - Detailed cruise selection. 
 - Excluding readings based on site, boundries and date.
-- Download customization of dataset within the set parameters by retrieval, frequency, and quality. 
+- Permits customization of dataset within the set parameters by retrieval, frequency, and quality. 
 
 <img src="https://github.com/user-attachments/assets/69fc96a4-becc-4e60-aba3-3051dcd7ecab" alt="MAN DL Example" height="450" width="auto" align="center"/>
