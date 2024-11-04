@@ -13,6 +13,7 @@
     "bootstrap": "*",
     "d3": "*",
     "leaflet": "*",
+    "leaflet-svg-shape-markers": "^1.4.0",
     "react": "*",
     "react-bootstrap": "*",
     "react-dom": "*",

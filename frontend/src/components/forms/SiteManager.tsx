@@ -42,6 +42,7 @@ interface SiteManagerChildProps {
   deselectAllSites: () => void;
   setSites: (sites: SiteSelect[]) => void;
 }
+
 function setColorScale() {
   const colors = [
     "blue",
