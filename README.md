@@ -7,6 +7,9 @@ __Interactive Download Tool for Maritime Aerosol Network Datasets featuring comp
 - Cruise path tracing
 - Detailed cruise selection. 
 - Excluding readings based on site, boundries and date.
+- Dynamic Data Display for dynamically reading different reading values
+- Dynamic Legend to fit data displaying within the map
 - Permits customization of dataset within the set parameters by retrieval, frequency, and quality. 
+- Download customized datasets
 
 <img src="https://github.com/user-attachments/assets/ef4f4994-b268-43e6-a987-0c291d691032" alt="MAN DL Example" height="450" width="auto" align="center"/>
