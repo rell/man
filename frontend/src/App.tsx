@@ -5,9 +5,13 @@ import { MapProvider } from "./components/MapContext";
 import { SiteProvider } from "./components/SiteContext";
 import "./App.css";
 
+
+
 const App: React.FC = () => {
   const center: [number, number] = [0, 0];
   const zoom = 2;
+  
+
 
   return (
     <SiteProvider>

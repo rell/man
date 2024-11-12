@@ -123,7 +123,7 @@ const CustomMapLayer: React.FC = () => {
       <img src="https://www.openmoji.org/data/color/svg/1F6DF.svg" alt="GitHub" style="width: auto; height: 20px; margin-right: 8px;">
     
       <!-- <img src="https://camo.githubusercontent.com/e569686d6182fa7259dcb392e42e16d2e336b408f34362a3bea6d13c8fdc0337/68747470733a2f2f7a656e6f646f2e6f72672f7265636f72642f373734323939372f66696c65732f546f70735f42616467655f4e6173612e706e67" alt="TOPS" style="width: auto; height: 25px; margin-right: 8px;"/> -->
-      <strong>Open Source</strong>
+      <strong>Github Repository</strong>
     </a>
   `;
       div.style.marginBottom = "5px";

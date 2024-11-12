@@ -35,7 +35,7 @@ const SidePanel: React.FC = () => {
   const [drawing, setDrawing] = useState(false);
   const [rectangleDrawn, setRectangleDrawn] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [dataValue, setDataValue] = useState<string>("AOD_500nm");
+  const [dataValue, setDataValue] = useState<string>("aod_500nm");
   const [displayOpts, setDisplayOpts] = useState<Set<string>>(new Set());
   
   interface DisplayInfoResponse {
