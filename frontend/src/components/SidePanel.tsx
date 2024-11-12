@@ -10,6 +10,7 @@ import "leaflet-draw";
 import axios from "axios";
 import LoadingIndicator from "./extra/LoadingIndicator";
 import API_BASE_URL from "../config";
+import ColorLegend from "./colorScale";
 
 export interface SiteSelect {
   name: string;
@@ -34,7 +35,12 @@ const SidePanel: React.FC = () => {
   const [drawing, setDrawing] = useState(false);
   const [rectangleDrawn, setRectangleDrawn] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-
+  const [dataValue, setDataValue] = useState<string>("AOD_500nm");
+  const [displayOpts, setDisplayOpts] = useState<Set<string>>(new Set());
+  
+  interface DisplayInfoResponse {
+    opts: string[]; 
+  }
   useEffect(() => {
     if (map) {
       const onZoom = () => {
@@ -49,7 +55,26 @@ const SidePanel: React.FC = () => {
       };
     }
   }, [map]);
+  
+   useEffect(() => {
+    const fetchDisplayInfo = async () => {
+      try {
+        const response = await axios.get<DisplayInfoResponse>(`${API_BASE_URL}/maritimeapp/display_info`, {
+          responseType: 'json',
+        });
+        // Convert the array of options into a Set
+        setDisplayOpts(new Set(response.data.opts));
+      } catch (error) {
+        console.error('Error fetching display options:', error);
+      }
+    };
 
+    fetchDisplayInfo();
+  }, []); // Empty dependency array means it runs once on component mount
+
+  useEffect(()=>{
+    handleBoundaryChange();
+  }, [minLat, minLng, maxLat, maxLng]);
   {
     /* handle download */
   }
@@ -87,6 +112,10 @@ const SidePanel: React.FC = () => {
       return newSelection;
     });
   };
+
+
+
+
   const handleDownload = async () => {
     const params = {
       sites: Array.from(selectedSites),
@@ -133,7 +162,6 @@ const SidePanel: React.FC = () => {
     } finally {
       setShowLoading(false); // Removing the download indicator
     }
-
     setShowDownloadModal(false); // Close the download modal
   };
   {
@@ -151,6 +179,10 @@ const SidePanel: React.FC = () => {
       map.setZoom(zoom);
       setZoomLevel(zoom);
     }
+  };
+  
+  const handleDataTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setDataValue(event.target.value); // Access the value of the selected option
   };
 
   const handleSelectionChange = (
@@ -203,6 +235,7 @@ const SidePanel: React.FC = () => {
           L.latLng(minLat, minLng),
           L.latLng(maxLat, maxLng),
         );
+
         const newBounds = L.rectangle(correctedBounds, {
           color: "#ff0000", // Red outline
           weight: 2,
@@ -219,7 +252,6 @@ const SidePanel: React.FC = () => {
 
         setRectangleDrawn(true);
 
-        // console.log("Rectangle Bounds:", bounds);
         drawHandler.disable();
         setDrawing(false);
       });
@@ -233,7 +265,7 @@ const SidePanel: React.FC = () => {
         new L.LatLng(maxLat || 0, maxLng || 0),
       );
       rectangle.setBounds(bounds);
-      map.fitBounds(bounds);
+      //map.fitBounds(bounds);
     }
   };
 
@@ -263,8 +295,13 @@ const SidePanel: React.FC = () => {
     console.log("Selected Sites Updated:", selectedSites);
   }, [selectedSites]);
 
+  //TODO: Refresh map redering and selected site list upon chnging of these values 
+  //useEffect(() => {
+  //}, [startDate, endDate, minLat]);
+
   return (
     <>
+      <ColorLegend type={dataValue} />
       <Card className={styles.sidePanel}>
         <Card.Body>
           <Card.Title>Map Controls</Card.Title>
@@ -288,6 +325,16 @@ const SidePanel: React.FC = () => {
               Center Map
             </Button>
             <div className={styles.buttonContainer}>
+              <SiteManager
+                startDate={startDate}
+                endDate={endDate}
+                minLat={minLat}
+                minLng={minLng}
+                maxLat={maxLat}
+                maxLng={maxLng}
+                type={dataValue} 
+                selectedSites={selectedSites}
+              >
               <Button
                 style={{ marginRight: "5px" }}
                 variant="primary"
@@ -295,8 +342,10 @@ const SidePanel: React.FC = () => {
                 onClick={drawAction}
               >
                 Draw Bounds
-              </Button>
 
+              </Button>
+              
+              </SiteManager>
               <Button
                 variant="danger"
                 className={styles.customButton}
@@ -460,7 +509,7 @@ const SidePanel: React.FC = () => {
             minLng={minLng}
             maxLat={maxLat}
             maxLng={maxLng}
-            type="AOD_500nm" // TODO: Change this to be dynamically assigned by Configuration Modal
+            type={dataValue} // TODO: Change this to be dynamically assigned by Configuration Modal
             selectedSites={selectedSites}
           >
             <SiteSelectionForm
@@ -484,7 +533,23 @@ const SidePanel: React.FC = () => {
           <Modal.Title>Data Display</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body></Modal.Body>
+        <Modal.Body>
+         <Form.Select
+          value={dataValue}
+          onChange={handleDataTypeChange} 
+          aria-label="Select display option"
+          >
+          {!displayOpts.has('aod_500nm') && (
+            <option value="aod_500nm">aod_500nm</option>
+          )}
+
+          {Array.from(displayOpts).map((opt, index) => (
+            <option key={index} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </Form.Select>
+        </Modal.Body>
       </Modal>
     </>
   );

@@ -13,7 +13,7 @@ const App: React.FC = () => {
     <SiteProvider>
       <MapProvider>
         <div className="App" style={{ display: "flex" }}>
-          <MapComponent center={center} zoom={zoom} />
+          <MapComponent center={center} zoom={zoom} type={"aod_500nm"} />
           <SidePanel />
         </div>
       </MapProvider>

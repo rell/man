@@ -187,7 +187,7 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
       <div className="date-range-container">
         <input
           type="date"
-          placeholder="Start Date"
+          //placeholder="Start Date"
           value={startDate}
           onChange={handleStartDateChange}
           min={minStartDate}
@@ -195,7 +195,7 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
         />
         <input
           type="date"
-          placeholder="End Date"
+          //placeholder="End Date"
           value={endDate}
           onChange={handleEndDateChange}
           min={startDate}

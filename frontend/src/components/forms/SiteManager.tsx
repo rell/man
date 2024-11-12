@@ -55,9 +55,9 @@ function setColorScale() {
   ];
 
   const scale = d3
-    .scaleLinear<string>()
-    .domain([0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1])
-    .range(colors);
+  .scaleLinear<string>()
+  .domain([0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1])
+  .range(colors);
 
   return scale;
 }
@@ -82,76 +82,80 @@ const SiteManager: React.FC<SiteManagerProps> = ({
   minLng,
   maxLat,
   maxLng,
+  type="aod_500nm",
   selectedSites,
   children,
 }) => {
   const { map } = useMapContext();
   const [sites, setSites] = useState<SiteSelect[]>([]);
-  const [value, setValue] = useState<string>("aod_500nm");
+  const [value, setValue] = useState<string>(type);
 
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const params = new URLSearchParams();
-        // Append the necessary parameters
-        if (startDate) params.append("start_date", startDate);
-        if (endDate) params.append("end_date", endDate);
-        if (
-          minLat !== undefined &&
-          minLng !== undefined &&
-          maxLat !== undefined &&
-          maxLng !== undefined
-        ) {
-          params.append("min_lat", minLat.toString());
-          params.append("min_lng", minLng.toString());
-          params.append("max_lat", maxLat.toString());
-          params.append("max_lng", maxLng.toString());
-        }
-
-        console.log("fetching!", sites);
-
-        const response = await fetch(
-          `${API_BASE_URL}/maritimeapp/measurements/sites/?${params.toString()}`,
-        );
-        console.log(
-          `${API_BASE_URL}/maritimeapp/measurements/sites/?${params.toString()}`,
-        );
-        const data: SiteSelect[] = await response.json();
-        setSites(data);
-      } catch (error) {
-        console.error("Error fetching sites:", error);
-      }
-    };
-
-    fetchSites();
-  }, [startDate, endDate, minLat, minLng, maxLat, maxLng]);
-
+  // TODO: FIXED:(IN LISTENER CALLING ALL minLat...maxLng was doing a segmented call just calling the last object to be set (MaxLng fixed auto loading prevention)) 
   // on selected site change fetch the sites and plot onto map
   useEffect(() => {
-    const fetchMarkers = async () => {
-      try {
-        const params = new URLSearchParams();
-        if (startDate) params.append("start_date", startDate);
-        if (endDate) params.append("end_date", endDate);
-        if (selectedSites)
-          params.append(
-            "sites",
-            Array.from(selectedSites)
-              .map((site) => site)
-              .join(","),
-          );
+    fetchSites();
+    fetchMarkers();
+
+    console.log(`LOGGING: ${selectedSites} \n ${startDate} \n ${endDate} \n ${minLat} \n ${minLng} \n ${maxLat} \n ${maxLng}`)
+  }, [selectedSites, startDate, endDate,  maxLng, type]);
+
+
+  const fetchSites = async () => {
+    try {
+      const params = new URLSearchParams();
+      // Append the necessary parameters
+      if (startDate) params.append("start_date", startDate);
+      if (endDate) params.append("end_date", endDate);
+      if (
+        minLat !== undefined &&
+        minLng !== undefined &&
+        maxLat !== undefined &&
+        maxLng !== undefined
+      ) {
+        params.append("min_lat", minLat.toString());
+        params.append("min_lng", minLng.toString());
+        params.append("max_lat", maxLat.toString());
+        params.append("max_lng", maxLng.toString());
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/maritimeapp/measurements/sites/?${params.toString()}`,
+      );
+      console.log(
+        `${API_BASE_URL}/maritimeapp/measurements/sites/?${params.toString()}`,
+      );
+      const data: SiteSelect[] = await response.json();
+      setSites(data);
+    } catch (error) {
+      console.error("Error fetching sites:", error);
+    }
+  };
+
+  const fetchMarkers = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append("start_date", startDate);
+      if (endDate) params.append("end_date", endDate);
+      if (selectedSites)
+        params.append(
+          "sites",
+          Array.from(selectedSites)
+          .map((site) => site)
+          .join(","),
+        );
         if (
           minLat !== undefined &&
           minLng !== undefined &&
-          maxLat !== undefined &&
-          maxLng !== undefined
+        maxLat !== undefined &&
+      maxLng !== undefined
         ) {
           params.append("min_lat", minLat.toString());
           params.append("min_lng", minLng.toString());
           params.append("max_lat", maxLat.toString());
           params.append("max_lng", maxLng.toString());
         }
-
+        if(type) params.append("reading", type);
+        
         const response = await fetch(
           `${API_BASE_URL}/maritimeapp/measurements/?${params.toString()}`,
         );
@@ -194,10 +198,9 @@ const SiteManager: React.FC<SiteManagerProps> = ({
           }
 
           // Create the circle marker
-          const cruiseMarker = L.shapeMarker([latlng.lat, latlng.lng], {
+          const cruiseMarker = L.circleMarker([latlng.lat, latlng.lng], {
             color: setColor(value),
             radius: 4,
-            shape: "square",
             fillOpacity: 0.9,
             stroke: false,
             interactive: true,
@@ -207,6 +210,19 @@ const SiteManager: React.FC<SiteManagerProps> = ({
             originalColor: setColor(value),
           }).addTo(siteGroups[site]);
 
+          //  L.shapeMarker([latlng.lat, latlng.lng], {
+          //  color: setColor(value),
+          //  radius: 4,
+          //  shape: "square",
+          //  fillOpacity: 0.9,
+          //  stroke: false,
+          //  interactive: true,
+          //  value: value,
+          //  site: site,
+          //  date: date,
+          //  originalColor: setColor(value),
+          //}).addTo(siteGroups[site]);
+
           // Bind click event to change opacity of markers in the same group
           cruiseMarker.on("click", () => {
             const currentTime = Date.now();
@@ -215,7 +231,7 @@ const SiteManager: React.FC<SiteManagerProps> = ({
             if (
               lastClickTime &&
               lastClickedSite === site &&
-              currentTime - lastClickTime < 1000 // time window to doule click to reset site view
+            currentTime - lastClickTime < 1000 // Time window to doule click to reset site view 
             ) {
               // Handle double-click
               clearMap();
@@ -232,12 +248,12 @@ const SiteManager: React.FC<SiteManagerProps> = ({
           });
           cruiseMarker.on("mouseover", () => {
             cruiseMarker
-              .bindPopup(
-                `<b>Site:</b> ${cruiseMarker.options.site}<br>
-                 <b>Value:</b> ${cruiseMarker.options.value.toFixed(3)}<br>
-                 <b>Date:</b> ${cruiseMarker.options.date}`,
-              )
-              .openPopup();
+            .bindPopup(
+              `<b>Site:</b> ${cruiseMarker.options.site}<br>
+              <b>${type}:</b> ${cruiseMarker.options.value.toFixed(3)}<br>
+              <b>Date:</b> ${cruiseMarker.options.date}`,
+            )
+            .openPopup();
           });
           cruiseMarker.on("mouseout", () => {
             cruiseMarker.closePopup();
@@ -275,12 +291,12 @@ const SiteManager: React.FC<SiteManagerProps> = ({
 
                 layer.on("mouseover", () => {
                   layer
-                    .bindPopup(
-                      `<b>Site:</b> ${layer.options.site}<br>
-                        <b>Value:</b> ${layer.options.value.toFixed(3)}<br>
-                        <b>Date:</b> ${layer.options.date}`,
-                    )
-                    .openPopup();
+                  .bindPopup(
+                    `<b>Site:</b> ${layer.options.site}<br>
+                    <b>${type}:</b> ${layer.options.value.toFixed(3)}<br>
+                    <b>Date:</b> ${layer.options.date}`,
+                  )
+                  .openPopup();
                 });
 
                 layer.on("mouseout", () => {
@@ -306,12 +322,12 @@ const SiteManager: React.FC<SiteManagerProps> = ({
 
                   layer.on("mouseover", () => {
                     layer
-                      .bindPopup(
-                        `<b>Site:</b> ${layer.options.site}<br>
-                        <b>Value:</b> ${layer.options.value.toFixed(3)}<br>
-                        <b>Date:</b> ${layer.options.date}`,
-                      )
-                      .openPopup();
+                    .bindPopup(
+                      `<b>Site:</b> ${layer.options.site}<br>
+                      <b>${type}:</b> ${layer.options.value.toFixed(3)}<br>
+                      <b>Date:</b> ${layer.options.date}`,
+                    )
+                    .openPopup();
                   });
                   layer.on("mouseout", () => {
                     layer.closePopup();
@@ -350,11 +366,11 @@ const SiteManager: React.FC<SiteManagerProps> = ({
 
             // Get markers for the selected site and sort them by date (newest to oldest)
             const siteMarkers = markers
-              .filter((marker) => marker.site === site)
-              .sort(
-                (a, b) =>
-                  new Date(b.date).getTime() - new Date(a.date).getTime(),
-              );
+            .filter((marker) => marker.site === site)
+            .sort(
+              (a, b) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime(),
+            );
 
             const latlngs = siteMarkers.map((marker) => [
               marker.latlng.lat,
@@ -363,9 +379,9 @@ const SiteManager: React.FC<SiteManagerProps> = ({
 
             // Define color scale
             const colorScale = d3
-              .scaleLinear<string>()
-              .domain([0, 1])
-              .range(["rgb(255, 0, 0)", "rgb(0, 255, 0)"]);
+            .scaleLinear<string>()
+            .domain([0, 1])
+            .range(["rgb(255, 0, 0)", "rgb(0, 255, 0)"]);
 
             // Create a new polyline group
             const polylineGroup = L.featureGroup().addTo(map);
@@ -390,14 +406,10 @@ const SiteManager: React.FC<SiteManagerProps> = ({
             sitePolylineGroups[site] = polylineGroup;
           };
         });
-      } catch (error) {
-        console.error("Error fetching sites:", error);
-      }
-    };
-
-    fetchMarkers();
-  }, [selectedSites, startDate, endDate, minLat, minLng, maxLat, maxLng]);
-
+    } catch (error) {
+      console.error("Error fetching sites:", error);
+    }
+  };
   return React.cloneElement(children, {
     sites,
     selectedSites,

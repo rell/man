@@ -6,10 +6,12 @@ import { Container } from "react-bootstrap";
 import styles from "./MapComponent.module.css";
 import { useMapContext } from "./MapContext";
 import * as d3 from "d3";
+import ColorLegend from './colorScale';
 
 interface MapComponentProps {
   center: [number, number];
   zoom: number;
+  type: string;
 }
 
 function setMarkerColorScale() {
@@ -57,101 +59,6 @@ function setColor(value: number, type: string) {
   }
 }
 
-export function createColorLegend() {
-  const colorScale = setMarkerColorScale();
-  const colorLegend = L.control({ position: "bottomleft" });
-
-  colorLegend.onAdd = function (map: L.Map) {
-    const div = L.DomUtil.create("div", "legend");
-
-    // TODO: Interface with sidebar to dynmanically change when Display Data modal is modified
-    const readText = L.DomUtil.create("div", "", div);
-    readText.innerHTML = `<strong>Data Preview:</strong> AOD 500nm`;
-    readText.style.textAlign = "center";
-    readText.style.marginBottom = "10px";
-    readText.style.fontSize = "14px";
-
-    // Create and append colorBar div
-    const colorBar = L.DomUtil.create("div", "", div);
-    colorBar.id = "colorBar";
-    colorBar.style.backgroundImage = `linear-gradient(to right, ${colorScale(0)}, ${colorScale(1 / 6)}, ${colorScale((1 / 6) * 2)}, ${colorScale((1 / 6) * 3)}, ${colorScale((1 / 6) * 4)}, ${colorScale((1 / 6) * 5)}, ${colorScale(1)})`;
-    colorBar.style.width = "${310-20}px";
-    colorBar.style.height = "10px";
-    colorBar.style.position = "relative";
-
-    // Add triangles outside the colorBar
-    const leftTriangle = L.DomUtil.create("div", "", div);
-    leftTriangle.style.position = "absolute";
-    leftTriangle.style.top = "46px";
-    leftTriangle.style.left = `${10}px`;
-    leftTriangle.style.width = "0";
-    leftTriangle.style.height = "10px";
-    leftTriangle.style.borderTop = "5px solid transparent";
-    leftTriangle.style.borderBottom = "5px solid transparent";
-    leftTriangle.style.borderRight = "5px solid grey";
-
-    const rightTriangle = L.DomUtil.create("div", "", div);
-    rightTriangle.style.position = "absolute";
-    rightTriangle.style.top = "46px";
-    rightTriangle.style.right = `${10}px`;
-    rightTriangle.style.width = "0";
-    rightTriangle.style.height = "0";
-    rightTriangle.style.borderTop = "5px solid transparent";
-    rightTriangle.style.borderBottom = "5px solid transparent";
-    rightTriangle.style.borderLeft = "5px solid darkred";
-
-    // Create and append legendMarker div
-    const legendMarker = L.DomUtil.create("div", "", div);
-    legendMarker.id = "legendMarker";
-    legendMarker.style.width = "300px";
-    legendMarker.style.textAlign = "center";
-    legendMarker.style.fontSize = "10px";
-    legendMarker.style.position = "relative";
-    legendMarker.style.marginTop = "5px";
-    legendMarker.style.padding = "0 20px";
-
-    // Add labels for each tick mark
-    for (let i = 0; i <= 6; i++) {
-      const value = (i / 6).toFixed(1);
-      const p = L.DomUtil.create("p", "", legendMarker);
-      p.innerText = value;
-      p.style.display = "inline-block";
-      p.style.width = `${(i / 6) * 100}%`;
-      p.style.textAlign = "center";
-      p.style.position = "absolute";
-      p.style.left = `${(i / 6) * 100}%`;
-      p.style.transform = "translateX(-50%)";
-      p.style.marginBottom = "10px";
-      p.style.fontSize = "0.9em";
-    }
-
-    // Create line indicating the color scale from blue to red
-    const gradientLine = L.DomUtil.create("div", "", div);
-    gradientLine.style.backgroundImage = `linear-gradient(to right, rgb(0, 255, 0), rgb(255, 0, 0))`;
-    gradientLine.style.width = "310px";
-    gradientLine.style.height = "10px";
-    gradientLine.style.marginTop = "25px";
-
-    // Add labels for the start and end of the gradient line
-    const labels = L.DomUtil.create("div", "", div);
-    labels.style.display = "flex";
-    labels.style.justifyContent = "space-between";
-    labels.style.width = "310px";
-    labels.style.marginTop = "5px";
-    labels.innerHTML = `<span>Start</span><span>End</span>`;
-
-    div.style.padding = "15px";
-    div.style.backgroundColor = "rgba(255,255,255,0.7)";
-    div.style.borderRadius = "5px";
-    div.style.fontSize = "0.8em";
-    div.style.boxShadow = "0 0 5px rgba(0, 0, 0, 0.5)";
-    div.style.textAlign = "center";
-
-    return div;
-  };
-
-  return colorLegend;
-}
 
 const CustomMapLayer: React.FC = () => {
   const map = useMap();
@@ -170,7 +77,8 @@ const CustomMapLayer: React.FC = () => {
     };
 
     const basemapUrl =
-      "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi";
+      //"https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi";
+      "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png";
     const basemapLayer = L.tileLayer.wms(basemapUrl, {
       layers: "BlueMarble_NextGeneration",
       format: "image/png",
@@ -186,25 +94,24 @@ const CustomMapLayer: React.FC = () => {
     });
 
     var references = L.tileLayer(
-      "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.{ext}",
+      "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
       {
         noWrap: true,
         minZoom: 0,
         maxZoom: 20,
-        ext: "png",
+        subdomains: "abcd",
       },
     );
 
     map.addLayer(basemapLayer);
-    // map.addLayer(references);
-
-    createColorLegend().addTo(map);
+    map.addLayer(references);
+    //createColorLegend().addTo(map);
 
     map.setMinZoom(1);
     map.setMaxZoom(19);
     map.setMaxBounds([
-      [-400, -400],
-      [400, 400],
+      [-90, -180], 
+      [90, 180]    
     ]);
 
     // Project control
@@ -216,7 +123,7 @@ const CustomMapLayer: React.FC = () => {
       <img src="https://www.openmoji.org/data/color/svg/1F6DF.svg" alt="GitHub" style="width: auto; height: 20px; margin-right: 8px;">
     
       <!-- <img src="https://camo.githubusercontent.com/e569686d6182fa7259dcb392e42e16d2e336b408f34362a3bea6d13c8fdc0337/68747470733a2f2f7a656e6f646f2e6f72672f7265636f72642f373734323939372f66696c65732f546f70735f42616467655f4e6173612e706e67" alt="TOPS" style="width: auto; height: 25px; margin-right: 8px;"/> -->
-      <strong>MAN PROJECT</strong>
+      <strong>Open Source</strong>
     </a>
   `;
       div.style.marginBottom = "5px";
@@ -225,8 +132,8 @@ const CustomMapLayer: React.FC = () => {
     };
 
     const attributionControl = L.control
-      .attribution({ position: "bottomright" })
-      .addAttribution("© NASA GIBS EOSDIS")
+      .attribution({position: "bottomright"})
+      .addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>')
       .setPrefix('<a href="https://leafletjs.com/">Leaflet</a>')
       .addTo(map);
 
@@ -235,7 +142,7 @@ const CustomMapLayer: React.FC = () => {
 
     return () => {
       map.removeLayer(basemapLayer);
-      // map.removeLayer(references);
+       map.removeLayer(references);
       removeAllControls();
     };
   }, [map, setMap]);
@@ -243,7 +150,7 @@ const CustomMapLayer: React.FC = () => {
   return null;
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({ center, zoom }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, type }) => {
   return (
     <Container fluid style={{ padding: "0" }} className={styles.mapContainer}>
       <MapContainer

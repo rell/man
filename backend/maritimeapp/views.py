@@ -402,7 +402,20 @@ def list_sites(request):
     return JsonResponse(list(sites), safe=False)
 
 
+from django.db import models
+from .models import Site, SiteMeasurementsDaily15
 
+@require_GET
+def get_display_info(request):
+    returned = []
+    for field in SiteMeasurementsDaily15._meta.get_fields():
+        print(field)
+        if isinstance(field, models.FloatField):
+            returned.append(field.name)
+    return JsonResponse({
+        'opts':returned
+    }) 
+        
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from .models import Site, SiteMeasurementsDaily15
@@ -410,10 +423,9 @@ from django.contrib.gis.geos import Polygon
 from django.contrib.gis.geos.point import Point
 from django.utils.dateparse import parse_date
 
-
 @require_GET
 def site_measurements(request):
-    aod_key = request.GET.get('reading', 'aod_500nm')
+    aod_key = request.GET.get('reading')
     min_lat = request.GET.get('min_lat')
     min_lng = request.GET.get('min_lng')
     max_lat = request.GET.get('max_lat')
@@ -447,7 +459,7 @@ def site_measurements(request):
         queryset = queryset.filter(date__lte=end_date)
 
     # Convert queryset to a list of dictionaries and handle latlng serialization
-    measurements = list(queryset.values('site', 'filename', 'date', 'time', 'latlng', 'aeronet_number', aod_key))
+    measurements = list(queryset.exclude(**{aod_key: -999}).values('site', 'filename', 'date', 'time', 'latlng', 'aeronet_number', aod_key))
 
     # Convert latlng (Point) to a serializable format
     for measurement in measurements:

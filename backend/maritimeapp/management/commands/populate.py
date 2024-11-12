@@ -164,7 +164,7 @@ class Command(BaseCommand):
             concurrent.futures.wait(futures)
 
     def handle(self, *args, **options):
-        print("Session beginning...")
+        print("Attempting Session")
         file_endings = [
             "all_points.lev10",
             "all_points.lev15",
@@ -178,6 +178,11 @@ class Command(BaseCommand):
         # Download the MAN file from the static URL
         url = "https://aeronet.gsfc.nasa.gov/new_web/All_MAN_Data_V3.tar.gz"
         response = requests.get(url)
+        
+        if !response.ok:
+            print("Server Offline. Attempt again Later.")
+            return
+        
         tar_contents = response.content
 
         with tarfile.open(fileobj=io.BytesIO(tar_contents), mode="r:gz") as tar:
