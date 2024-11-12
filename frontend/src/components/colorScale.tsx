@@ -7,32 +7,48 @@ interface ColorLegendProps {
   type:string;
 }
 const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
-  const markerScale = d3
-    .scaleLinear<string>()
-    .domain([0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1])
-    .range([
-    "blue",
-    "teal",
-    "green",
-    "chartreuse",
-    "yellow",
-    "orange",
-    "red",
-  ]);
+  let markerDomain: number[] = [];
+  let markerTicks: number[] = [];
+  let traceDomain: number[] = [];
+  let traceTicks: number[] = [];
+
+  if (type.includes("std") || type.includes("aod")) {
+    markerDomain = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
+    markerTicks = Array.from({ length: 6 }, (_, i) => parseFloat((i * 0.1).toFixed(1)));
+    traceDomain = [0, 5];
+    traceTicks = [0, 2.5, 5];
+  } else if (type.includes("water") || type.includes("air_mass")) {
+    markerDomain = [0, 1, 2, 3,  4, 5];
+    markerTicks = Array.from({ length: 6 }, (_, i) => i);
+    traceDomain = [0, 0.5];
+    traceTicks = [0, 0.25, 0.5];
+  } else if (type.includes("angstrom")) {
+    markerDomain = [0, 0.3333, 0.6667, 1, 1.3333, 1.6667, 2];
+    markerTicks = Array.from({ length: 7 }, (_, i) => parseFloat((i / 6).toFixed(1)));
+    traceDomain = [0, 0.5];
+    traceTicks = [0, 0.25, 0.5];
+  } else {
+    markerDomain = [0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1];
+    markerTicks = Array.from({ length: 7 }, (_, i) => parseFloat((i / 6).toFixed(1)));
+    traceDomain = [0, 1];
+    traceTicks = [0, 0.5, 1];
+  }
+
+  const markerScale = d3.scaleLinear<string>()
+    .domain(markerDomain)
+    .range(["blue", "teal", "green", "chartreuse", "yellow", "orange", "red"]);
 
   const traceScale = d3.scaleLinear<string>()
-    .domain([0, 1])
+    .domain(traceDomain)
     .range(["#39FF14", "red"]);
 
-  const ticks = Array.from({ length: 7 }, (_, i) => (i / 6).toFixed(1));
-
-  const tickPositions = ticks.map((_, index) => {
+  const tickPositions = markerTicks.map((_, index) => {
     if (index === 0) {
-      return `${55}%`; 
-    } else if (index === ticks.length - 1) {
-      return `${((index / (ticks.length - 1)) * 100) - 60}%`; 
+      return `${70}%`;
+    } else if (index === markerTicks.length - 1) {
+      return `${((index / (markerTicks.length - 1)) * 100) - 40}%`;
     } else {
-      return `${((index / (ticks.length - 1)) * 100)+1}%`; 
+      return `${((index / (markerTicks.length - 1)) * 100) + 1}%`;
     }
   });
 
@@ -53,56 +69,56 @@ const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
       }}
     >
       <Typography variant="body1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
-        Data Preview: {type} 
+        Data Preview: {type}
       </Typography>
+      
       <OverlayTrigger
-        placement="top" 
+        placement="top"
         overlay={<Tooltip id="tooltip-top">Marker Value Scale Legend</Tooltip>}
       >
-      <Box
-        sx={{
-          marginTop: '8px',
-          height: '12px',
-          width: '260px',
-          backgroundImage: `linear-gradient(to right, ${markerScale(0)}, ${markerScale(0.2)}, ${markerScale(0.4)}, ${markerScale(0.6)}, ${markerScale(0.8)}, ${markerScale(1)})`,
-          border: '0.2px solid #333',
-          margin: '0 auto',
-          position: 'relative',
-        }}
-      >
         <Box
           sx={{
-            position: 'absolute',
-            top: '1px',
-            left: '-10px',
-            width: '0',
-            height: '0',
-            borderLeft: '5px solid transparent',
-            borderRight: '5px solid transparent',
-            borderBottom: '8px solid grey',
-            transform: 'rotate(-90deg)',
+            marginTop: '8px',
+            height: '12px',
+            width: '270px',
+            backgroundImage: `linear-gradient(to right, ${markerScale(markerDomain[0])}, ${markerScale(markerDomain[1])}, ${markerScale(markerDomain[2])}, ${markerScale(markerDomain[3])}, ${markerScale(markerDomain[4])}, ${markerScale(markerDomain[5])}, ${markerScale(markerDomain[6] || 1)})`,
+            border: '0.2px solid #333',
+            margin: '0 auto',
+            position: 'relative',
           }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '1px',
-            right: '-10px',
-            width: '0',
-            height: '0',
-            borderLeft: '5px solid transparent',
-            borderRight: '5px solid transparent',
-            borderBottom: '8px solid darkred',
-            transform: 'rotate(90deg)',
-          }}
-        />
-      </Box>
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '1px',
+              left: '-10px',
+              width: '0',
+              height: '0',
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+              borderBottom: '8px solid grey',
+              transform: 'rotate(-90deg)',
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '1px',
+              right: '-10px',
+              width: '0',
+              height: '0',
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+              borderBottom: '8px solid darkred',
+              transform: 'rotate(90deg)',
+            }}
+          />
+        </Box>
       </OverlayTrigger>
-      
-  
+
       <Box sx={{ position: 'relative', width: '280px', margin: '0 auto' }}>
-        <Grid container justifyContent="space-between" sx={{ marginTop: `16px` }}>
-          {ticks.map((tick, index) => (
+        <Grid container justifyContent="space-between" sx={{ marginTop: '16px' }}>
+          {markerTicks.map((tick, index) => (
             <Grid item key={index} sx={{ position: 'relative', textAlign: 'center' }}>
               <Typography variant="caption" sx={{ position: 'relative', top: '-8px' }}>
                 {tick}
@@ -121,23 +137,24 @@ const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
           ))}
         </Grid>
       </Box>
+
       <OverlayTrigger
-        placement="top" 
+        placement="top"
         overlay={<Tooltip id="tooltip-top">Cruise Trace Legend</Tooltip>}
       >
-      <Box
-        sx={{
-          marginTop: '16px',
-          height: '12px',
-          width: '280px',
-          backgroundImage: `linear-gradient(to right, ${traceScale(0)}, ${traceScale(0.2)}, ${traceScale(0.4)}, ${traceScale(0.6)}, ${traceScale(0.8)}, ${traceScale(1)})`,
-          border: '1px solid #333',
-          margin: '0 auto',
-          position: 'relative',
-        }}
-      >
-      </Box>
+        <Box
+          sx={{
+            marginTop: '16px',
+            height: '12px',
+            width: '280px',
+            backgroundImage: `linear-gradient(to right, ${traceScale(traceDomain[0])}, ${traceScale(traceDomain[1])})`,
+            border: '1px solid #333',
+            margin: '0 auto',
+            position: 'relative',
+          }}
+        />
       </OverlayTrigger>
+
       <Grid container justifyContent="space-between" sx={{ width: '280px', marginTop: '20px', margin: '0 auto' }}>
         <Typography variant="caption">Start</Typography>
         <Typography variant="caption">End</Typography>

@@ -29,7 +29,7 @@ interface SiteManagerProps {
   minLng?: number;
   maxLat?: number;
   maxLng?: number;
-  type?: string;
+  type: string;
   selectedSites?: Set<string>;
   children: ReactElement<SiteManagerChildProps>;
 }
@@ -42,38 +42,8 @@ interface SiteManagerChildProps {
   deselectAllSites: () => void;
   setSites: (sites: SiteSelect[]) => void;
 }
+  
 
-function setColorScale() {
-  const colors = [
-    "blue",
-    "teal",
-    "green",
-    "chartreuse",
-    "yellow",
-    "orange",
-    "red",
-  ];
-
-  const scale = d3
-  .scaleLinear<string>()
-  .domain([0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1])
-  .range(colors);
-
-  return scale;
-}
-
-function setColor(value: number) {
-  // let color = "";
-  if (value <= 1) {
-    const colorScale = setColorScale();
-    return colorScale(value); // sets weight of color based on scale
-  } else if (value > 1) {
-    return d3.color("darkred");
-  } else {
-    return d3.color("grey");
-  }
-  // return color;
-}
 
 const SiteManager: React.FC<SiteManagerProps> = ({
   startDate,
@@ -82,23 +52,62 @@ const SiteManager: React.FC<SiteManagerProps> = ({
   minLng,
   maxLat,
   maxLng,
-  type="aod_500nm",
+  type,
   selectedSites,
   children,
 }) => {
   const { map } = useMapContext();
   const [sites, setSites] = useState<SiteSelect[]>([]);
   const [value, setValue] = useState<string>(type);
+  const [colors, setColors] = useState<string[]>([]); 
+  const [colorDomain, setColorDomain] = useState<number[]>([]);
+  
+  useEffect(() => {
+    const colors = ["blue", "teal", "green", "chartreuse", "yellow", "orange", "red"];
+    let domain: number[];
 
-  // TODO: FIXED:(IN LISTENER CALLING ALL minLat...maxLng was doing a segmented call just calling the last object to be set (MaxLng fixed auto loading prevention)) 
-  // on selected site change fetch the sites and plot onto map
+    if (type.includes("std_") || type.includes("aod_")) {
+      domain = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
+    } else if (type.includes("water_vapor") || type.includes("air_mass")) {
+      domain = [0, 1, 2, 3, 4, 5];
+    } else {
+      domain = [0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1];
+    }
+
+    setColors(colors);
+    setColorDomain(domain);
+  }, [type]); 
+
+  // Previous issue: setColorDomain would run inconsistently so setColor would happen without updated domain
+  // Fixed through adding an effect for when Domain is fully changed
+  useEffect(() =>{
+    fetchSites();
+    fetchMarkers();
+  }, [colorDomain]);
+
+
+  // FIXED:(IN LISTENER CALLING ALL minLat...maxLng was doing a segmented call just calling the last object to be set (MaxLng fixed auto loading prevention)) 
   useEffect(() => {
     fetchSites();
     fetchMarkers();
 
-    console.log(`LOGGING: ${selectedSites} \n ${startDate} \n ${endDate} \n ${minLat} \n ${minLng} \n ${maxLat} \n ${maxLng}`)
-  }, [selectedSites, startDate, endDate,  maxLng, type]);
+    //console.log(`LOGGING: ${selectedSites} \n ${startDate} \n ${endDate} \n ${minLat} \n ${minLng} \n ${maxLat} \n ${maxLng}`)
+  }, [selectedSites, startDate, endDate,  maxLng]);
 
+  function setColor(value: number) {
+    const colorScale = d3.scaleLinear<string>().domain(colorDomain).range(colors);
+    const max_val = colorDomain[colorDomain.length - 1];
+    if (value <= max_val){
+      return colorScale(value); // sets weight of color based on scale
+    }
+    else if(value > max_val)
+      {
+        return d3.color("darkred");
+      }
+    
+      return d3.color("grey");
+      
+}
 
   const fetchSites = async () => {
     try {
