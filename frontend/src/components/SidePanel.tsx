@@ -319,10 +319,10 @@ const SidePanel: React.FC = () => {
               <div className={styles.sliderLabel}>Zoom Level: {zoomLevel}</div>
             </div>
             <Button
-              variant="info"
+              variant="warning"
               onClick={() => map && map.setView([0, 0], 2)}
             >
-              Center Map
+             Reset View 
             </Button>
             <div className={styles.buttonContainer}>
               <SiteManager
@@ -337,7 +337,7 @@ const SidePanel: React.FC = () => {
               >
               <Button
                 style={{ marginRight: "5px" }}
-                variant="primary"
+                variant="success"
                 className={styles.customButton}
                 onClick={drawAction}
               >
@@ -404,11 +404,11 @@ const SidePanel: React.FC = () => {
           <hr className={styles.separator} />
           <Card.Title>Configuration</Card.Title>
           <div className={styles.buttonGroup}>
-            <Button variant="success" onClick={handleToggleModal}>
+            <Button variant="secondary" onClick={handleToggleModal}>
               Cruise Selection
             </Button>
-            <Button variant="warning" onClick={handleToggleDataModal}>
-              Display Data
+            <Button variant="secondary" onClick={handleToggleDataModal}>
+            Display Data
             </Button>
           </div>
           <hr className={styles.separator} />
@@ -416,7 +416,7 @@ const SidePanel: React.FC = () => {
           {/*<Card.Title>Download</Card.Title>*/}
           <div className={styles.buttonGroup}>
             <Button
-              variant="secondary"
+              variant="primary"
               onClick={handleToggleDownloadModal}
               className={styles.customButton}
             >
@@ -532,8 +532,8 @@ const SidePanel: React.FC = () => {
         <Modal.Header closeButton>
           <Modal.Title>Data Display</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
+        <Card.Header>DATA TYPE:</Card.Header>
          <Form.Select
           value={dataValue}
           onChange={handleDataTypeChange} 
