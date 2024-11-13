@@ -12,7 +12,6 @@ const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
   let traceDomain: number[] = [0, 5];
   let traceTicks: number[] = [0, 2.5, 5];
 
-// Define markerDomain and markerTicks based on the `type`
 if (type.includes("std") || type.includes("aod")) {
     markerDomain = Array.from({ length: 6 }, (_, i) => parseFloat((i * 0.1).toFixed(1)));
     markerTicks = markerDomain;  
