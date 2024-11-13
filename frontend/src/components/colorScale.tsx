@@ -9,50 +9,41 @@ interface ColorLegendProps {
 const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
   let markerDomain: number[] = [];
   let markerTicks: number[] = [];
-  let traceDomain: number[] = [];
-  let traceTicks: number[] = [];
+  let traceDomain: number[] = [0, 5];
+  let traceTicks: number[] = [0, 2.5, 5];
 
-  if (type.includes("std") || type.includes("aod")) {
-    markerDomain = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
-    markerTicks = Array.from({ length: 6 }, (_, i) => parseFloat((i * 0.1).toFixed(1)));
-    traceDomain = [0, 5];
-    traceTicks = [0, 2.5, 5];
-  } else if (type.includes("water") || type.includes("air_mass")) {
-    markerDomain = [0, 1, 2, 3,  4, 5];
-    markerTicks = Array.from({ length: 6 }, (_, i) => i);
-    traceDomain = [0, 0.5];
-    traceTicks = [0, 0.25, 0.5];
-  } else if (type.includes("angstrom")) {
-    markerDomain = [0, 0.3333, 0.6667, 1, 1.3333, 1.6667, 2];
-    markerTicks = Array.from({ length: 7 }, (_, i) => parseFloat((i / 6).toFixed(1)));
-    traceDomain = [0, 0.5];
-    traceTicks = [0, 0.25, 0.5];
-  } else {
-    markerDomain = [0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1];
-    markerTicks = Array.from({ length: 7 }, (_, i) => parseFloat((i / 6).toFixed(1)));
-    traceDomain = [0, 1];
-    traceTicks = [0, 0.5, 1];
-  }
+// Define markerDomain and markerTicks based on the `type`
+if (type.includes("std") || type.includes("aod")) {
+    markerDomain = Array.from({ length: 6 }, (_, i) => parseFloat((i * 0.1).toFixed(1)));
+    markerTicks = markerDomain;  
+} else if (type.includes("water") || type.includes("air_mass")) {
+    markerDomain = Array.from({ length: 6 }, (_, i) => i);
+    markerTicks = markerDomain;
+} else if (type.includes("angstrom")) {
+    markerDomain = Array.from({ length: 6 }, (_, i) => parseFloat((i * (2 / 5)).toFixed(1)));
+    markerTicks = markerDomain;
+} else {
+    markerDomain = Array.from({ length: 6 }, (_, i) => parseFloat((i / 6).toFixed(1)));
+    markerTicks = markerDomain;
+}
 
   const markerScale = d3.scaleLinear<string>()
     .domain(markerDomain)
-    .range(["blue", "teal", "green", "chartreuse", "yellow", "orange", "red"]);
+    .range(["blue", "teal", "green", "yellow", "orange", "red"]);
 
   const traceScale = d3.scaleLinear<string>()
     .domain(traceDomain)
     .range(["#39FF14", "red"]);
 
-  const tickPositions = markerTicks.map((_, index) => {
-    if (index === 0) {
-      return `${70}%`;
-    } else if (index === markerTicks.length - 1) {
-      return `${((index / (markerTicks.length - 1)) * 100) - 40}%`;
-    } else {
-      return `${((index / (markerTicks.length - 1)) * 100) + 1}%`;
-    }
-  });
+  const gradientColors = markerDomain.map(value => markerScale(value)).join(', ');
 
-  return (
+ const tickPositions = markerTicks.map((_, index) => {
+    const percentagePosition = (index / (markerTicks.length - 1)) * 100;
+    return `${percentagePosition}%`;
+ });
+
+
+ return (
     <Box
       sx={{
         position: 'absolute',
@@ -80,8 +71,8 @@ const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
           sx={{
             marginTop: '8px',
             height: '12px',
-            width: '270px',
-            backgroundImage: `linear-gradient(to right, ${markerScale(markerDomain[0])}, ${markerScale(markerDomain[1])}, ${markerScale(markerDomain[2])}, ${markerScale(markerDomain[3])}, ${markerScale(markerDomain[4])}, ${markerScale(markerDomain[5])}, ${markerScale(markerDomain[6] || 1)})`,
+            width: '280px',
+            backgroundImage: `linear-gradient(to right, ${gradientColors})`,
             border: '0.2px solid #333',
             margin: '0 auto',
             position: 'relative',
@@ -116,7 +107,7 @@ const ColorLegend: React.FC<ColorLegendProps> = ({type}) => {
         </Box>
       </OverlayTrigger>
 
-      <Box sx={{ position: 'relative', width: '280px', margin: '0 auto' }}>
+      <Box sx={{ position: 'relative', width: '278px', margin: '0 auto' }}>
         <Grid container justifyContent="space-between" sx={{ marginTop: '16px' }}>
           {markerTicks.map((tick, index) => (
             <Grid item key={index} sx={{ position: 'relative', textAlign: 'center' }}>

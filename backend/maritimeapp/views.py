@@ -332,6 +332,7 @@ from .models import Site, SiteMeasurementsDaily15
 
 @require_GET
 def list_sites(request):
+    reading = request.GET.get('reading')
     min_lat = request.GET.get('min_lat')
     min_lng = request.GET.get('min_lng')
     max_lat = request.GET.get('max_lat')

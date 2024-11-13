@@ -66,12 +66,14 @@ const SiteManager: React.FC<SiteManagerProps> = ({
     const colors = ["blue", "teal", "green", "chartreuse", "yellow", "orange", "red"];
     let domain: number[];
 
-    if (type.includes("std_") || type.includes("aod_")) {
-      domain = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
-    } else if (type.includes("water_vapor") || type.includes("air_mass")) {
-      domain = [0, 1, 2, 3, 4, 5];
+    if (type.includes("std") || type.includes("aod")) {
+        domain = Array.from({ length: 6 }, (_, i) => parseFloat((i * 0.1).toFixed(1)));
+    } else if (type.includes("water") || type.includes("air_mass")) {
+        domain = Array.from({ length: 6 }, (_, i) => i);
+    } else if (type.includes("angstrom")) {
+        domain = Array.from({ length: 6 }, (_, i) => parseFloat((i * (2 / 5)).toFixed(1)));
     } else {
-      domain = [0, 1 / 6, (1 / 6) * 2, (1 / 6) * 3, (1 / 6) * 4, (1 / 6) * 5, 1];
+        domain = Array.from({ length: 6 }, (_, i) => parseFloat((i / 6).toFixed(1)));
     }
 
     setColors(colors);
@@ -104,11 +106,10 @@ const SiteManager: React.FC<SiteManagerProps> = ({
       {
         return d3.color("darkred");
       }
-    
       return d3.color("grey");
       
 }
-
+  //TODO: Add readings param to api call to remove sites not tracking specific readings from list
   const fetchSites = async () => {
     try {
       const params = new URLSearchParams();
@@ -218,19 +219,6 @@ const SiteManager: React.FC<SiteManagerProps> = ({
             date: date,
             originalColor: setColor(value),
           }).addTo(siteGroups[site]);
-
-          //  L.shapeMarker([latlng.lat, latlng.lng], {
-          //  color: setColor(value),
-          //  radius: 4,
-          //  shape: "square",
-          //  fillOpacity: 0.9,
-          //  stroke: false,
-          //  interactive: true,
-          //  value: value,
-          //  site: site,
-          //  date: date,
-          //  originalColor: setColor(value),
-          //}).addTo(siteGroups[site]);
 
           // Bind click event to change opacity of markers in the same group
           cruiseMarker.on("click", () => {
