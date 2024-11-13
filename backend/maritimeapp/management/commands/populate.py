@@ -179,7 +179,7 @@ class Command(BaseCommand):
         url = "https://aeronet.gsfc.nasa.gov/new_web/All_MAN_Data_V3.tar.gz"
         response = requests.get(url)
         
-        if !response.ok:
+        if not response.ok:
             print("Server Offline. Attempt again Later.")
             return
         
