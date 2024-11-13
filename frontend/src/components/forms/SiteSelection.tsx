@@ -92,10 +92,9 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
   };
 
   // Handle date changes
-
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newStartDate = e.target.value;
-    if (newStartDate >= minStartDate) {
+    if (newStartDate >= minStartDate && newStartDate <= endDate) {
       setStartDate(newStartDate);
     }
   };
@@ -188,7 +187,7 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
         <input
           type="date"
           //placeholder="Start Date"
-          value={startDate}
+          value={startDate || ''}
           onChange={handleStartDateChange}
           min={minStartDate}
           max={today}
@@ -196,10 +195,11 @@ const SiteSelectionForm: React.FC<SiteSelectionFormProps> = ({
         <input
           type="date"
           //placeholder="End Date"
-          value={endDate}
+          value={endDate || ''}
           onChange={handleEndDateChange}
           min={startDate}
           max={today}
+          pattern="\d{2}-\d{2}-\d{4}"
         />
       </div>
       <button onClick={clearDates} className="btn btn-secondary clear-date-btn">
