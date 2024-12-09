@@ -45,6 +45,11 @@ const SidePanel: React.FC = () => {
     if (map) {
       const onZoom = () => {
         setZoomLevel(map.getZoom());
+      
+        // on zoom adjust the size of markers if it exists
+        // TODO: compute formula to output consistant size relative to zoom 
+        
+
       };
 
       // Add the event listener for 'zoomend'

@@ -27,7 +27,7 @@ numpy = "*"
 packaging = "*"
 pandas = "*"
 partd = "*"
-psycopg2 = "*"
+psycopg2-binary = "*"
 python-dateutil = "*"
 pytz = "*"
 pyyaml = "*"
@@ -47,4 +47,4 @@ gunicorn = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.12"
+python_version = "3.11"
