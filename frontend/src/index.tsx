@@ -4,9 +4,9 @@ import { createRoot } from "react-dom/client";
 import React from "react";
 import App from "./App";
 
-const container = document.getElementById("root");
-if (container) {
-  const root = createRoot(container);
+const rootCont = document.getElementById("root");
+if (rootCont) {
+  const root = createRoot(rootCont);
   root.render(
     <React.StrictMode>
       <App />
