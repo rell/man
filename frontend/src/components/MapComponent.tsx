@@ -92,8 +92,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, type }) => {
         attributionControl={false}
         style={{ height: "100%", width: "100%" }}
       >
+
+        <CustomControls /> 
         <CustomMapLayer />
-        <CustomControls /> {/* Add CustomControls here */}
       </MapContainer>
     </Container>
   );
