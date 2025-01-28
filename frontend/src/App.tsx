@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MapComponent from "./components/MapComponent";
 import SidePanel from "./components/SidePanel";
 import { MapProvider } from "./components/MapContext";
